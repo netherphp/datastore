@@ -107,6 +107,76 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodHas():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertTrue($Store->Has('one'));
+		$this->assertFalse($Store->Has('zero'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodGet():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertEquals(1, $Store->Get('one'));
+
+		$this->assertNull($Store->Get('zero'));
+		$this->assertFalse($Store->Get('zero', FALSE));
+	
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodSet():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertEquals(1, $Store->Get('one'));
+
+		// expect a changed value.
+
+		$Store->Set('one', '一');
+		$this->assertEquals('一', $Store->Get('one'));
+	
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodDefine():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertEquals(1, $Store->Get('one'));
+
+		// expect an unchanged value.
+
+		$this->assertTrue($Store->Has('one'));
+		$Store->Define('one', '一');
+		$this->assertEquals(1, $Store->Get('one'));
+
+		// expect a freshly set value.
+
+		$this->assertFalse($Store->Has('zero'));
+		$Store->Define('zero', '〇');
+
+		$this->assertTrue($Store->Has('zero'));
+		$this->assertEquals('〇', $Store->Get('zero'));
+	
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Test]
+	public function
 	MethodEach():
 	void {
 
