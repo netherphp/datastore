@@ -102,4 +102,60 @@ extends TestCase {
 		return;
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Test]
+	public function
+	MethodEach():
+	void {
+
+		$Func = function(int $V) {
+			echo $V, PHP_EOL;
+			return;
+		};
+
+		$Expect = join(PHP_EOL, [ 1, 2, 3 ]) . PHP_EOL;
+
+		$Test = function(string $Buffer) use($Expect) {
+			$this->assertEquals($Expect, $Buffer);
+			return;
+		};
+
+		////////
+
+		ob_start($Test);
+			$Store = new Datastore(static::DatasetSimpleMap);
+			$Store->Each($Func);
+		ob_end_flush();
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodEachKeyValue():
+	void {
+
+		$Func = function(string $K, int $V) {
+			echo "{$K}:{$V}", PHP_EOL;
+			return;
+		};
+
+		$Expect = join(PHP_EOL, [ 'one:1', 'two:2', 'three:3' ]) . PHP_EOL;
+
+		$Test = function(string $Buffer) use($Expect) {
+			$this->assertEquals($Expect, $Buffer);
+		};
+
+		////////
+
+		ob_start($Test);
+			$Store = new Datastore(static::DatasetSimpleMap);
+			$Store->EachKeyValue($Func);
+		ob_end_flush();
+
+		return;
+	}
+
 };
