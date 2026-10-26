@@ -1,0 +1,25 @@
+{
+	"name": "netherphp/datastore",
+	"description": "Redux of Datastore from Common",
+	"type": "library",
+	"license": "BSD-3-Clause",
+	"autoload": {
+		"psr-0": {
+			"Nether\\": "src/"
+		}
+	},
+	"authors": [
+		{
+			"name": "bobmagicii",
+			"email": "bob@pegasusgate.net",
+			"homepage": "http://pegasusgate.net",
+			"role": "developer"
+		}
+	],
+	"require": {
+		"php": "^8.5"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^13"
+	}
+}
