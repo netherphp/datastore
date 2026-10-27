@@ -63,7 +63,7 @@ class Datastore {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Meta\Info('Retrieve a specific value if it exists, otherwise return default value.')]
+	#[Meta\Info('Check if a key exists in the dataset.')]
 	#[Meta\Date('2026-10-26')]
 	public function
 	Has(int|string $Key):
@@ -72,7 +72,7 @@ class Datastore {
 		return array_key_exists($Key, $this->Dataset);
 	}
 
-	#[Meta\Info('Retrieve a specific value if it exists, otherwise return default value.')]
+	#[Meta\Info('Retrieve a key-value if it exists, otherwise return default value.')]
 	#[Meta\Date('2026-10-26')]
 	public function
 	Get(int|string $Key, mixed $Default=NULL):
@@ -84,7 +84,7 @@ class Datastore {
 		return $this->Dataset[$Key];
 	}
 
-	#[Meta\Info('Set a specific value only if the key does not already exist.')]
+	#[Meta\Info('Set a key-value only if the key does not already exist.')]
 	#[Meta\Date('2026-10-26')]
 	public function
 	Define(int|string $Key, mixed $Value):
@@ -96,7 +96,7 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Set a specific value.')]
+	#[Meta\Info('Set a specific key-value.')]
 	#[Meta\Date('2026-10-26')]
 	public function
 	Set(int|string $Key, mixed $Value):
