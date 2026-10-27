@@ -78,7 +78,7 @@ class Datastore {
 	Get(int|string $Key, mixed $Default=NULL):
 	mixed {
 
-		if(!array_key_exists($Key, $this->Dataset))
+		if(!$this->Has($Key))
 		return $Default;
 
 		return $this->Dataset[$Key];
