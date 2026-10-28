@@ -63,6 +63,24 @@ class Datastore {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
+	#[Meta\Info('Check if this dataset is a "list" meaning cleanly numerically indexed.')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	IsList():
+	bool {
+
+		return array_is_list($this->Dataset);
+	}
+
+	#[Meta\Info('Get how many items are in this dataset.')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	Count():
+	int {
+
+		return count($this->Dataset);
+	}
+
 	#[Meta\Info('Check if a key exists in the dataset.')]
 	#[Meta\Date('2026-10-26')]
 	public function
@@ -107,6 +125,57 @@ class Datastore {
 		return $this;
 	}
 
+	#[Meta\Info('Turn this dataset into a cleanly numerically indexed list.')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	Listify():
+	static {
+
+		$this->Dataset = array_values($this->Dataset);
+
+		return $this;
+	}
+
+	#[Meta\Info('Push a new item onto the end of the dataset.')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	Push(mixed $Value):
+	static {
+
+		$this->Dataset[] = $Value;
+
+		return $this;
+	}
+
+	#[Meta\Info('Pop an item off the end of the dataset.')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	Pop():
+	mixed {
+
+		return array_pop($this->Dataset);
+	}
+
+	#[Meta\Info('Push a new item onto the start of the dataset.')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	PushFirst(mixed $Value):
+	static {
+
+		array_unshift($this->Dataset, $Value);
+
+		return $this;
+	}
+
+	#[Meta\Info('Pop an item off the start of the dataset.')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	PopFirst():
+	mixed {
+
+		return array_shift($this->Dataset);
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -136,6 +205,58 @@ class Datastore {
 		);
 
 		return $this;
+	}
+
+	#[Meta\Info('Filter dataset using the supplied callable($Val).')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	Filter(callable $FuncVal):
+	static {
+
+		$this->Dataset = array_filter($this->Dataset, $FuncVal);
+
+		return $this;
+	}
+
+	#[Meta\Info('Filter dataset using the supplied callable($Key, $Val).')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	FilterKeyValue(callable $FuncKeyVal):
+	static {
+
+		$this->Dataset = array_filter(
+			$this->Dataset,
+			fn(mixed $Val, int|string $Key)=> $FuncKeyVal($Key, $Val),
+			ARRAY_FILTER_USE_BOTH
+		);
+
+		return $this;
+	}
+
+	#[Meta\Info('Filter into new Datastore object using the supplied callable($Val).')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	Distill(callable $FuncVal):
+	Datastore {
+
+		$Result = new static(array_filter($this->Dataset, $FuncVal));
+
+		return $Result;
+	}
+
+	#[Meta\Info('Filter into new Datastore object using the supplied callable($Key, $Val).')]
+	#[Meta\Date('2026-10-27')]
+	public function
+	DistillKeyValue(callable $FuncKeyVal):
+	Datastore {
+
+		$Result = new static(array_filter(
+			$this->Dataset,
+			fn(mixed $Val, int|string $Key)=> $FuncKeyVal($Key, $Val),
+			ARRAY_FILTER_USE_BOTH
+		));
+
+		return $Result;
 	}
 
 	////////////////////////////////////////////////////////////////

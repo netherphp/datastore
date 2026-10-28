@@ -107,6 +107,17 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodCount():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertEquals(static::DatasetSimpleCount, $Store->Count());
+		
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodHas():
 	void {
 
@@ -172,6 +183,94 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	MethodPush():
+	void {
+
+		$Store = new Datastore;
+		$Store->Push(1)->Push(2)->Push(3);
+
+		$this->assertEquals(3, $Store->Count());
+		$this->assertEquals(1, $Store->Get(0));
+		$this->assertEquals(3, $Store->Get(2));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodPop():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$this->assertEquals(3, $Store->Count());
+
+		$Value = $Store->Pop();
+		$this->assertEquals('three', $Value);
+		$this->assertEquals(2, $Store->Count());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodPushFirst():
+	void {
+
+		$Store = new Datastore;
+		$Store->PushFirst(1)->PushFirst(2)->PushFirst(3);
+
+		$this->assertEquals(3, $Store->Count());
+		$this->assertEquals(3, $Store->Get(0));
+		$this->assertEquals(1, $Store->Get(2));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodPopFirst():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$this->assertEquals(3, $Store->Count());
+
+		$Value = $Store->PopFirst();
+		$this->assertEquals('one', $Value);
+		$this->assertEquals(2, $Store->Count());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodIsList():
+	void {
+
+		$List = new Datastore(static::DatasetSimpleList);
+		$Map = new Datastore(static::DatasetSimpleMap);
+
+		$this->assertTrue($List->IsList());
+		$this->assertFalse($Map->IsList());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodListify():
+	void {
+
+		$Map = new Datastore(static::DatasetSimpleMap);
+		$this->assertFalse($Map->IsList());
+
+		$Map->Listify();
+		$this->assertTrue($Map->IsList());
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -227,5 +326,80 @@ extends TestCase {
 
 		return;
 	}
+
+	#[Test]
+	public function
+	MethodFilter():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$Store->Filter(fn($V)=> $V === 'two')->Listify();
+
+		$this->assertEquals(1, $Store->Count());
+		$this->assertEquals('two', $Store->Get(0));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodFilterKeyValue():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->FilterKeyValue(fn($K, $V)=> $K === 'two');
+
+		$this->assertEquals(1, $Store->Count());
+		$this->assertEquals(2, $Store->Get('two'));
+		$this->assertNull($Store->Get('one'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodDistill():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$Other = $Store->Distill(fn($V)=> $V === 'two')->Listify();
+
+		$this->assertNotEquals(
+			spl_object_id($Store),
+			spl_object_id($Other)
+		);
+
+		$this->assertEquals(3, $Store->Count());
+		$this->assertEquals('one', $Store->Get(0));
+
+		$this->assertEquals(1, $Other->Count());
+		$this->assertEquals('two', $Other->Get(0));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodDistillKeyValue():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Other = $Store->DistillKeyValue(fn($K, $V)=> $K === 'two');
+
+		$this->assertNotEquals(
+			spl_object_id($Store),
+			spl_object_id($Other)
+		);
+
+		$this->assertEquals(3, $Store->Count());
+		$this->assertEquals(1, $Store->Get('one'));
+
+		$this->assertEquals(1, $Other->Count());
+		$this->assertEquals(2, $Other->Get('two'));
+		$this->assertNull($Other->Get('one'));
+
+		return;
+	}
+
 
 };
