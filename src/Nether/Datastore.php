@@ -4,13 +4,19 @@
 namespace Nether;
 
 use ArrayAccess;
+use Iterator;
+use Countable;
+use JsonSerializable;
 use Nether\Meta\Code;
 
 ################################################################################
 ################################################################################
 
 class Datastore
-implements ArrayAccess {
+implements
+	ArrayAccess,
+	Countable,
+	Iterator {
 
 	#[Code\Info('Internal dataset.')]
 	#[Code\Added('2026-10-26')]
@@ -396,6 +402,51 @@ implements ArrayAccess {
 
 		$this->Unset($Key);
 		return;
+	}
+
+	################################################################
+	## interface: Iterator #########################################
+
+	#[Code\Added('2026-10-28')]
+	public function
+	current():
+	mixed {
+
+		return current($this->Dataset);
+	}
+
+	#[Code\Added('2026-10-28')]
+	public function
+	key():
+	mixed {
+
+		return key($this->Dataset);
+	}
+
+	#[Code\Added('2026-10-28')]
+	public function
+	next():
+	void {
+
+		next($this->Dataset);
+		return;
+	}
+
+	#[Code\Added('2026-10-28')]
+	public function
+	rewind():
+	void {
+
+		reset($this->Dataset);
+		return;
+	}
+
+	#[Code\Added('2026-10-28')]
+	public function
+	valid():
+	bool {
+
+		return (key($this->Dataset) !== NULL);
 	}
 
 };

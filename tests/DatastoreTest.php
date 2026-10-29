@@ -329,6 +329,7 @@ extends TestCase {
 
 		$Test = function(string $Buffer) use($Expect) {
 			$this->assertEquals($Expect, $Buffer);
+			return;
 		};
 
 		////////
@@ -527,10 +528,33 @@ extends TestCase {
 		$this->assertEquals(4, $Store['four']);
 		
 		// test offsetUnset
-		
+
 		unset($Store['two']);
 		$this->assertFalse(isset($Store['two']));
 		
+
+		return;
+	}
+
+	#[Test]
+	public function
+	InterfaceIterator():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		
+		$Expect = join(PHP_EOL, [ 'one:1', 'two:2', 'three:3' ]) . PHP_EOL;
+
+		$Test = function(string $Buffer) use($Expect) {
+			$this->assertEquals($Expect, $Buffer);
+			return;
+		};
+
+		ob_start($Test);
+		foreach($Store as $Key => $Val) {
+			printf('%s:%d%s', $Key, $Val, PHP_EOL);
+		}
+		ob_end_flush();
 
 		return;
 	}
