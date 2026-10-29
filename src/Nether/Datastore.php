@@ -78,15 +78,6 @@ implements
 		return array_is_list($this->Dataset);
 	}
 
-	#[Code\Info('Get how many items are in this dataset.')]
-	#[Code\Added('2026-10-27')]
-	public function
-	Count():
-	int {
-
-		return count($this->Dataset);
-	}
-
 	#[Code\Info('Check if a key exists in the dataset.')]
 	#[Code\Added('2026-10-26')]
 	public function
@@ -370,34 +361,38 @@ implements
 	################################################################
 	## interface: ArrayAccess ######################################
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	offsetExists(mixed $Key):
+	OffsetExists(mixed $Key):
 	bool {
 
 		return $this->Has($Key);
 	}
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	offsetGet(mixed $Key):
+	OffsetGet(mixed $Key):
 	mixed {
 
 		return $this->Get($Key);
 	}
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	offsetSet(mixed $Key, mixed $Val):
+	OffsetSet(mixed $Key, mixed $Val):
 	void {
 
 		$this->Set($Key, $Val);
 		return;
 	}
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	offsetUnset(mixed $Key):
+	OffsetUnset(mixed $Key):
 	void {
 
 		$this->Unset($Key);
@@ -405,45 +400,62 @@ implements
 	}
 
 	################################################################
+	## interface: Countable ########################################
+
+	#[Code\Info('Get how many items are in this dataset.')]
+	#[Code\Added('2026-10-27')]
+	public function
+	Count():
+	int {
+
+		return count($this->Dataset);
+	}
+
+	################################################################
 	## interface: Iterator #########################################
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	current():
+	Current():
 	mixed {
 
 		return current($this->Dataset);
 	}
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	key():
+	Key():
 	mixed {
 
 		return key($this->Dataset);
 	}
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	next():
+	Next():
 	void {
 
 		next($this->Dataset);
 		return;
 	}
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	rewind():
+	Rewind():
 	void {
 
 		reset($this->Dataset);
 		return;
 	}
 
+	/** @internal */
 	#[Code\Added('2026-10-28')]
 	public function
-	valid():
+	Valid():
 	bool {
 
 		return (key($this->Dataset) !== NULL);

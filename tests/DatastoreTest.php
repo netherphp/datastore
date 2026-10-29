@@ -559,4 +559,17 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	InterfaceCountable():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+	
+		$this->assertEquals(static::DatasetSimpleCount, count($Store));
+
+		return;
+	}
+
+
 };

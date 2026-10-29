@@ -4,4 +4,4 @@ Provides a data collection object that is a redux of the Nether\Common\Datastore
 
 # TODO
 
-* Move Nethe\Meta namespace to `netherphp/meta` once base annotations are re-established.
+* Move Nether\Meta namespace to `netherphp/meta` once base annotations are re-established.
