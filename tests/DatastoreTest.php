@@ -401,5 +401,90 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	MethodMap():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Other = $Store->Map(fn(int $Val)=> $Val * $Val);
+
+		$this->assertNotEquals(
+			spl_object_id($Other),
+			spl_object_id($Store)
+		);
+
+		$this->assertEquals(1, $Store->Get('one'));
+		$this->assertEquals(2, $Store->Get('two'));
+		$this->assertEquals(3, $Store->Get('three'));
+		
+		$this->assertEquals(1, $Other->Get('one'));
+		$this->assertEquals(4, $Other->Get('two'));
+		$this->assertEquals(9, $Other->Get('three'));
+		
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodMapKeyValue():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		
+		$Other = $Store->MapKeyValue(
+			fn(int|string $Key, int $Val)
+			=> sprintf('%s:%d', $Key, ($Val * $Val))
+		);
+
+		$this->assertNotEquals(
+			spl_object_id($Other),
+			spl_object_id($Store)
+		);
+
+		$this->assertEquals(1, $Store->Get('one'));
+		$this->assertEquals(2, $Store->Get('two'));
+		$this->assertEquals(3, $Store->Get('three'));
+
+		$this->assertEquals('one:1', $Other->Get('one'));
+		$this->assertEquals('two:4', $Other->Get('two'));
+		$this->assertEquals('three:9', $Other->Get('three'));
+		
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodRemap():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->Remap(fn(int $Val)=> $Val * $Val);
+		
+		$this->assertEquals(1, $Store->Get('one'));
+		$this->assertEquals(4, $Store->Get('two'));
+		$this->assertEquals(9, $Store->Get('three'));
+		
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodRemapKeyValue():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		
+		$Store->RemapKeyValue(
+			fn(int|string $Key, int $Val)
+			=> sprintf('%s:%d', $Key, ($Val * $Val))
+		);
+
+		$this->assertEquals('one:1', $Store->Get('one'));
+		$this->assertEquals('two:4', $Store->Get('two'));
+		$this->assertEquals('three:9', $Store->Get('three'));
+		
+		return;
+	}
 
 };

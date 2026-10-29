@@ -3,24 +3,22 @@
 
 namespace Nether;
 
-use Nether\Meta;
-
-use Exception;
+use Nether\Meta\Code;
 
 ################################################################################
 ################################################################################
 
 class Datastore {
 
-	#[Meta\Info('Internal dataset.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Internal dataset.')]
+	#[Code\Added('2026-10-26')]
 	protected array
 	$Dataset;
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Meta\Date('2026-10-26')]
+	#[Code\Added('2026-10-26')]
 	public function
 	__Construct(iterable $Input=[]) {
 
@@ -32,8 +30,8 @@ class Datastore {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Meta\Info('Return the internal dataset array.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Return the internal dataset array.')]
+	#[Code\Added('2026-10-26')]
 	public function
 	GetData():
 	array {
@@ -41,8 +39,8 @@ class Datastore {
 		return $this->Dataset;
 	}
 
-	#[Meta\Info('Populate the internal dataset with the specified data.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Populate the internal dataset with the specified data.')]
+	#[Code\Added('2026-10-26')]
 	public function
 	SetData(iterable $Input):
 	static {
@@ -63,8 +61,8 @@ class Datastore {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Meta\Info('Check if this dataset is a "list" meaning cleanly numerically indexed.')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Check if this dataset is a "list" meaning cleanly numerically indexed.')]
+	#[Code\Added('2026-10-27')]
 	public function
 	IsList():
 	bool {
@@ -72,8 +70,8 @@ class Datastore {
 		return array_is_list($this->Dataset);
 	}
 
-	#[Meta\Info('Get how many items are in this dataset.')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Get how many items are in this dataset.')]
+	#[Code\Added('2026-10-27')]
 	public function
 	Count():
 	int {
@@ -81,8 +79,8 @@ class Datastore {
 		return count($this->Dataset);
 	}
 
-	#[Meta\Info('Check if a key exists in the dataset.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Check if a key exists in the dataset.')]
+	#[Code\Added('2026-10-26')]
 	public function
 	Has(int|string $Key):
 	bool {
@@ -90,8 +88,8 @@ class Datastore {
 		return array_key_exists($Key, $this->Dataset);
 	}
 
-	#[Meta\Info('Retrieve a key-value if it exists, otherwise return default value.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Retrieve a key-value if it exists, otherwise return default value.')]
+	#[Code\Added('2026-10-26')]
 	public function
 	Get(int|string $Key, mixed $Default=NULL):
 	mixed {
@@ -102,8 +100,8 @@ class Datastore {
 		return $this->Dataset[$Key];
 	}
 
-	#[Meta\Info('Set a key-value only if the key does not already exist.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Set a key-value only if the key does not already exist.')]
+	#[Code\Added('2026-10-26')]
 	public function
 	Define(int|string $Key, mixed $Value):
 	static {
@@ -114,8 +112,8 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Set a specific key-value.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Set a specific key-value.')]
+	#[Code\Added('2026-10-26')]
 	public function
 	Set(int|string $Key, mixed $Value):
 	static {
@@ -125,8 +123,8 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Turn this dataset into a cleanly numerically indexed list.')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Turn this dataset into a cleanly numerically indexed list.')]
+	#[Code\Added('2026-10-27')]
 	public function
 	Listify():
 	static {
@@ -136,8 +134,8 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Push a new item onto the end of the dataset.')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Push a new item onto the end of the dataset.')]
+	#[Code\Added('2026-10-27')]
 	public function
 	Push(mixed $Value):
 	static {
@@ -147,8 +145,8 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Pop an item off the end of the dataset.')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Pop an item off the end of the dataset.')]
+	#[Code\Added('2026-10-27')]
 	public function
 	Pop():
 	mixed {
@@ -156,8 +154,8 @@ class Datastore {
 		return array_pop($this->Dataset);
 	}
 
-	#[Meta\Info('Push a new item onto the start of the dataset.')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Push a new item onto the start of the dataset.')]
+	#[Code\Added('2026-10-27')]
 	public function
 	PushFirst(mixed $Value):
 	static {
@@ -167,8 +165,8 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Pop an item off the start of the dataset.')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Pop an item off the start of the dataset.')]
+	#[Code\Added('2026-10-27')]
 	public function
 	PopFirst():
 	mixed {
@@ -179,8 +177,9 @@ class Datastore {
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Meta\Info('Run fn(mixed $Value) on every item in this dataset.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Run specified callable for every item in this dataset.')]
+	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Added('2026-10-26')]
 	public function
 	Each(callable $Func, mixed $Args=NULL):
 	static {
@@ -193,8 +192,9 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Run fn(mixed $Key, mixed $Value) on every item in this dataset.')]
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Run specified callable for every item in this dataset.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Added('2026-10-26')]
 	public function
 	EachKeyValue(callable $Func, mixed $Args=NULL):
 	static {
@@ -207,52 +207,60 @@ class Datastore {
 		return $this;
 	}
 
-	#[Meta\Info('Filter dataset using the supplied callable($Val).')]
-	#[Meta\Date('2026-10-27')]
+	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Modify this dataset using specified filter callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Added('2026-10-27')]
 	public function
-	Filter(callable $FuncVal):
+	Filter(callable $Func):
 	static {
 
-		$this->Dataset = array_filter($this->Dataset, $FuncVal);
+		$this->Dataset = array_filter($this->Dataset, $Func);
 
 		return $this;
 	}
 
-	#[Meta\Info('Filter dataset using the supplied callable($Key, $Val).')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Modify this dataset using specified filter callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Added('2026-10-27')]
 	public function
-	FilterKeyValue(callable $FuncKeyVal):
+	FilterKeyValue(callable $Func):
 	static {
 
 		$this->Dataset = array_filter(
 			$this->Dataset,
-			fn(mixed $Val, int|string $Key)=> $FuncKeyVal($Key, $Val),
+			fn(mixed $Val, int|string $Key)=> $Func($Key, $Val),
 			ARRAY_FILTER_USE_BOTH
 		);
 
 		return $this;
 	}
 
-	#[Meta\Info('Filter into new Datastore object using the supplied callable($Val).')]
-	#[Meta\Date('2026-10-27')]
-	public function
-	Distill(callable $FuncVal):
-	Datastore {
+	////////////////////////////////////////////////////////////////
 
-		$Result = new static(array_filter($this->Dataset, $FuncVal));
+	#[Code\Info('Distill a new dataset using specified filter callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Added('2026-10-27')]
+	public function
+	Distill(callable $Func):
+	static {
+
+		$Result = new static(array_filter($this->Dataset, $Func));
 
 		return $Result;
 	}
 
-	#[Meta\Info('Filter into new Datastore object using the supplied callable($Key, $Val).')]
-	#[Meta\Date('2026-10-27')]
+	#[Code\Info('Distill a new dataset using specified filter callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Added('2026-10-27')]
 	public function
-	DistillKeyValue(callable $FuncKeyVal):
-	Datastore {
+	DistillKeyValue(callable $Func):
+	static {
 
 		$Result = new static(array_filter(
 			$this->Dataset,
-			fn(mixed $Val, int|string $Key)=> $FuncKeyVal($Key, $Val),
+			fn(mixed $Val, int|string $Key)=> $Func($Key, $Val),
 			ARRAY_FILTER_USE_BOTH
 		));
 
@@ -260,9 +268,77 @@ class Datastore {
 	}
 
 	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Map a new dataset mapped using specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Added('2026-10-28')]
+	public function
+	Map(callable $FnVal):
+	static {
+
+		$Result = new static(array_map(
+			$FnVal,
+			$this->Dataset
+		));
+
+		return $Result;
+	}
+
+	#[Code\Info('Map a new dataset mapped using specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Added('2026-10-28')]
+	public function
+	MapKeyValue(callable $FnKeyVal):
+	static {
+
+		$Result = new Datastore;
+
+		////////
+
+		foreach($this->Dataset as $K => $V)
+		$Result->Set($K, $FnKeyVal($K, $V));
+
+		////////
+
+		return $Result;
+	}
+
 	////////////////////////////////////////////////////////////////
 
-	#[Meta\Date('2026-10-26')]
+	#[Code\Info('Remap this dataset using specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Added('2026-10-28')]
+	public function
+	Remap(callable $FnKey):
+	static {
+
+		$this->Dataset = array_map(
+			$FnKey,
+			$this->Dataset
+		);
+
+		return $this;
+	}
+
+	#[Code\Info('Remap this dataset using specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Added('2026-10-28')]
+	public function
+	RemapKeyValue(callable $FnKeyVal):
+	static {
+
+		foreach($this->Dataset as $K => $V)
+		$this->Set($K, $FnKeyVal($K, $V));
+
+		////////
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Code\Added('2026-10-26')]
 	static public function
 	New(iterable $Input=[]):
 	static {
