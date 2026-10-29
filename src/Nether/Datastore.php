@@ -3,37 +3,39 @@
 
 namespace Nether;
 
+use ArrayAccess;
 use Nether\Meta\Code;
 
 ################################################################################
 ################################################################################
 
-class Datastore {
+class Datastore
+implements ArrayAccess {
 
 	#[Code\Info('Internal dataset.')]
 	#[Code\Added('2026-10-26')]
 	protected array
 	$Dataset;
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	################################################################
+	################################################################
 
 	#[Code\Added('2026-10-26')]
 	public function
-	__Construct(iterable $Input=[]) {
+	__construct(iterable $Input=[]) {
 
-		$this->SetData($Input);
+		$this->Import($Input);
 
 		return;
 	}
 
-	////////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////////
+	################################################################
+	################################################################
 
 	#[Code\Info('Return the internal dataset array.')]
 	#[Code\Added('2026-10-26')]
 	public function
-	GetData():
+	Export():
 	array {
 
 		return $this->Dataset;
@@ -42,7 +44,7 @@ class Datastore {
 	#[Code\Info('Populate the internal dataset with the specified data.')]
 	#[Code\Added('2026-10-26')]
 	public function
-	SetData(iterable $Input):
+	Import(iterable $Input):
 	static {
 
 		$this->Dataset = match(TRUE) {
@@ -119,6 +121,17 @@ class Datastore {
 	static {
 
 		$this->Dataset[$Key] = $Value;
+
+		return $this;
+	}
+
+	#[Code\Info('Unset a specific key-value.')]
+	#[Code\Added('2026-10-28')]
+	public function
+	Unset(int|string $Key):
+	static {
+
+		unset($this->Dataset[$Key]);
 
 		return $this;
 	}
@@ -346,6 +359,43 @@ class Datastore {
 		$Store = new static($Input);
 
 		return $Store;
+	}
+
+	################################################################
+	## interface: ArrayAccess ######################################
+
+	#[Code\Added('2026-10-28')]
+	public function
+	offsetExists(mixed $Key):
+	bool {
+
+		return $this->Has($Key);
+	}
+
+	#[Code\Added('2026-10-28')]
+	public function
+	offsetGet(mixed $Key):
+	mixed {
+
+		return $this->Get($Key);
+	}
+
+	#[Code\Added('2026-10-28')]
+	public function
+	offsetSet(mixed $Key, mixed $Val):
+	void {
+
+		$this->Set($Key, $Val);
+		return;
+	}
+
+	#[Code\Added('2026-10-28')]
+	public function
+	offsetUnset(mixed $Key):
+	void {
+
+		$this->Unset($Key);
+		return;
 	}
 
 };

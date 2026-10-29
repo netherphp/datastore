@@ -30,8 +30,8 @@ extends TestCase {
 
 		$Data = new Datastore;
 		$this->assertInstanceOf(Datastore::class, $Data);
-		$this->assertIsArray($Data->GetData());
-		$this->assertCount(0, $Data->GetData());
+		$this->assertIsArray($Data->Export());
+		$this->assertCount(0, $Data->Export());
 
 		return;
 	}
@@ -42,7 +42,7 @@ extends TestCase {
 	void {
 
 		$Data = Datastore::New();
-		$this->assertCount(0, $Data->GetData());
+		$this->assertCount(0, $Data->Export());
 
 		return;
 	}
@@ -53,7 +53,7 @@ extends TestCase {
 	void {
 
 		$Data = new Datastore(static::DatasetSimpleList);
-		$this->assertCount(static::DatasetSimpleCount, $Data->GetData());
+		$this->assertCount(static::DatasetSimpleCount, $Data->Export());
 
 		return;
 	}
@@ -64,7 +64,7 @@ extends TestCase {
 	void {
 
 		$Data = Datastore::New(static::DatasetSimpleList);
-		$this->assertCount(static::DatasetSimpleCount, $Data->GetData());
+		$this->assertCount(static::DatasetSimpleCount, $Data->Export());
 
 		return;
 	}
@@ -78,7 +78,7 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleList);
-		$Data = $Store->GetData();
+		$Data = $Store->Export();
 
 		$this->assertArrayHasKey(0, $Data);
 		$this->assertCount(static::DatasetSimpleCount, $Data);
@@ -93,7 +93,7 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
-		$Data = $Store->GetData();
+		$Data = $Store->Export();
 
 		$this->assertArrayHasKey('one', $Data);
 		$this->assertCount(static::DatasetSimpleCount, $Data);
@@ -155,6 +155,20 @@ extends TestCase {
 		$Store->Set('one', '一');
 		$this->assertEquals('一', $Store->Get('one'));
 	
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodUnset():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertTrue($Store->Has('two'));
+
+		$Store->Unset('two');
+		$this->assertFalse($Store->Has('two'));
+
 		return;
 	}
 
@@ -484,6 +498,40 @@ extends TestCase {
 		$this->assertEquals('two:4', $Store->Get('two'));
 		$this->assertEquals('three:9', $Store->Get('three'));
 		
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Test]
+	public function
+	InterfaceArrayAccess():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+
+		// test offsetExists
+
+		$this->assertTrue(isset($Store['two']));
+		$this->assertFalse(isset($Store['four']));
+
+		// test offsetGet
+
+		$this->assertEquals(2, $Store['two']);
+
+		// test offsetSet
+
+		$Store['four'] = 4;
+		$this->assertTrue(isset($Store['four']));
+		$this->assertEquals(4, $Store['four']);
+		
+		// test offsetUnset
+		
+		unset($Store['two']);
+		$this->assertFalse(isset($Store['two']));
+		
+
 		return;
 	}
 
