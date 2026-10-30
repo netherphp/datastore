@@ -107,6 +107,65 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodWriteJSON():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Other = new Datastore;
+		$Filename = sprintf('%s.json', @tempnam('temp', 'dt-'));
+
+		// test writing a file to disk.
+
+		$Store->Write($Filename);
+		$this->assertTrue(file_exists($Filename));
+		$this->assertGreaterThan(1, filesize($Filename));
+
+		// test loading that file from disk.
+
+		$Other->Load($Filename);
+		$this->assertCount(static::DatasetSimpleCount, $Other);
+		$this->assertEquals(3, $Other->Get('three'));
+
+		////////
+
+		unlink($Filename);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodWritePHSON():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Other = new Datastore;
+		$Filename = sprintf('%s.phson', @tempnam('temp', 'dt-'));
+
+		// test writing a file to disk.
+
+		$Store->Write($Filename);
+		$this->assertTrue(file_exists($Filename));
+		$this->assertGreaterThan(1, filesize($Filename));
+
+		// test loading that file from disk.
+
+		$Other->Load($Filename);
+		$this->assertCount(static::DatasetSimpleCount, $Other);
+		$this->assertEquals(3, $Other->Get('three'));
+
+		////////
+
+		unlink($Filename);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Test]
+	public function
 	MethodCount():
 	void {
 

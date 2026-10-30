@@ -7,6 +7,7 @@ use ArrayAccess;
 use Iterator;
 use Countable;
 use JsonSerializable;
+use Nether\Datastore\Error\FileAccessUnwritable;
 use Nether\Meta\Code;
 
 ################################################################################
@@ -28,7 +29,7 @@ implements
 
 	#[Code\Added('2026-10-26')]
 	public function
-	__construct(iterable $Input=[]) {
+	__Construct(iterable $Input=[]) {
 
 		$this->Import($Input);
 
@@ -37,15 +38,6 @@ implements
 
 	################################################################
 	################################################################
-
-	#[Code\Info('Return the internal dataset array.')]
-	#[Code\Added('2026-10-26')]
-	public function
-	Export():
-	array {
-
-		return $this->Dataset;
-	}
 
 	#[Code\Info('Populate the internal dataset with the specified data.')]
 	#[Code\Added('2026-10-26')]
@@ -66,8 +58,134 @@ implements
 		return $this;
 	}
 
+	#[Code\Info('Populate the internal dataset from a file on disk (.json or .phson).')]
+	#[Code\Added('2026-10-29')]
+	public function
+	Load(string $Filename):
+	static {
+
+		if(!file_exists($Filename))
+		throw new Datastore\Error\FileNotFound($Filename);
+
+		if(!is_readable($Filename))
+		throw new Datastore\Error\FileAccessUnreadable($Filename);
+
+		////////
+
+		if(str_ends_with($Filename, '.json'))
+		$this->LoadJSON($Filename);
+		else
+		$this->LoadPHSON($Filename);
+
+		return $this;
+	}
+
+	#[Code\Added('2026-10-29')]
+	protected function
+	LoadJSON(string $Filename):
+	void {
+
+		$Data = json_decode(file_get_contents($Filename), TRUE);
+
+		if(!is_array($Data))
+		throw new Datastore\Error\FileFormatInvalid($Filename);
+
+		////////
+
+		$this->Import($Data);
+
+		return;
+	}
+
+	#[Code\Added('2026-10-29')]
+	protected function
+	LoadPHSON(string $Filename):
+	void {
+
+		$Data = unserialize(file_get_contents($Filename));
+
+		if(!is_array($Data))
+		throw new Datastore\Error\FileFormatInvalid($Filename);
+
+		////////
+
+		$this->Import($Data);
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Return the internal dataset array.')]
+	#[Code\Added('2026-10-26')]
+	public function
+	Export():
+	array {
+
+		return $this->Dataset;
+	}
+
+	#[Code\Info('Write this dataset to a file on disk (.json or .phson).')]
+	#[Code\Added('2026-10-29')]
+	public function
+	Write(string $Filename):
+	static {
+
+		if(!file_exists($Filename)) {
+			if(!is_writable(dirname($Filename)))
+			throw new FileAccessUnwritable(dirname($Filename));
+		}
+
+		elseif(!is_writable($Filename))
+		throw new FileAccessUnwritable($Filename);
+
+		////////
+
+		if(str_ends_with($Filename, '.json'))
+		$this->WriteJSON($Filename);
+		else
+		$this->WritePHSON($Filename);
+
+		return $this;
+	}
+
+	#[Code\Added('2026-10-29')]
+	protected function
+	WriteJSON(string $Filename):
+	void {
+
+		file_put_contents(
+			$Filename,
+			json_encode($this->Export())
+		);
+
+		return;
+	}
+
+	#[Code\Added('2026-10-29')]
+	protected function
+	WritePHSON(string $Filename):
+	void {
+
+		file_put_contents(
+			$Filename,
+			serialize($this->Export())
+		);
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Get how many items are in this dataset.')]
+	#[Code\Added('2026-10-27')]
+	public function
+	Count():
+	int {
+
+		return count($this->Dataset);
+	}
 
 	#[Code\Info('Check if this dataset is a "list" meaning cleanly numerically indexed.')]
 	#[Code\Added('2026-10-27')]
@@ -400,18 +518,6 @@ implements
 	}
 
 	################################################################
-	## interface: Countable ########################################
-
-	#[Code\Info('Get how many items are in this dataset.')]
-	#[Code\Added('2026-10-27')]
-	public function
-	Count():
-	int {
-
-		return count($this->Dataset);
-	}
-
-	################################################################
 	## interface: Iterator #########################################
 
 	/** @internal */
@@ -462,4 +568,3 @@ implements
 	}
 
 };
-
