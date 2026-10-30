@@ -113,12 +113,14 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetSimpleMap);
 		$Other = new Datastore;
 		$Filename = sprintf('%s.json', @tempnam('temp', 'dt-'));
+		$Expect = json_encode($Store->Export());
 
 		// test writing a file to disk.
 
 		$Store->Write($Filename);
 		$this->assertTrue(file_exists($Filename));
 		$this->assertGreaterThan(1, filesize($Filename));
+		$this->assertEquals($Expect, file_get_contents($Filename));
 
 		// test loading that file from disk.
 
@@ -141,12 +143,14 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetSimpleMap);
 		$Other = new Datastore;
 		$Filename = sprintf('%s.phson', @tempnam('temp', 'dt-'));
+		$Expect = serialize($Store->Export());
 
 		// test writing a file to disk.
 
 		$Store->Write($Filename);
 		$this->assertTrue(file_exists($Filename));
 		$this->assertGreaterThan(1, filesize($Filename));
+		$this->assertEquals($Expect, file_get_contents($Filename));
 
 		// test loading that file from disk.
 
