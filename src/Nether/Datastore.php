@@ -466,14 +466,14 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Map a new dataset mapped using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Value): mixed $ValueUpdate')]
+	#[Code\Arg('Func', 'fn(mixed $Value): mixed')]
 	#[Code\Added('2026-10-28')]
 	public function
-	Map(callable $FnVal):
+	Map(callable $Func):
 	static {
 
 		$Result = new static(array_map(
-			$FnVal,
+			$Func,
 			$this->Dataset
 		));
 
@@ -481,10 +481,10 @@ implements
 	}
 
 	#[Code\Info('Map a new dataset mapped using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): mixed $ValueUpdate')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): mixed')]
 	#[Code\Added('2026-10-28')]
 	public function
-	MapKeyValue(callable $FnKeyVal):
+	MapKeyValue(callable $Func):
 	static {
 
 		$Result = new Datastore;
@@ -492,7 +492,7 @@ implements
 		////////
 
 		foreach($this->Dataset as $K => $V)
-		$Result->Set($K, $FnKeyVal($K, $V));
+		$Result->Set($K, $Func($K, $V));
 
 		////////
 
@@ -502,14 +502,14 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Remap this dataset using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Value): mixed $ValueUpdate')]
+	#[Code\Arg('Func', 'fn(mixed $Value): mixed')]
 	#[Code\Added('2026-10-28')]
 	public function
-	Remap(callable $FnKey):
+	Remap(callable $Func):
 	static {
 
 		$this->Dataset = array_map(
-			$FnKey,
+			$Func,
 			$this->Dataset
 		);
 
@@ -517,14 +517,14 @@ implements
 	}
 
 	#[Code\Info('Remap this dataset using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): mixed $ValueUpdate')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): mixed')]
 	#[Code\Added('2026-10-28')]
 	public function
-	RemapKeyValue(callable $FnKeyVal):
+	RemapKeyValue(callable $Func):
 	static {
 
 		foreach($this->Dataset as $K => $V)
-		$this->Set($K, $FnKeyVal($K, $V));
+		$this->Set($K, $Func($K, $V));
 
 		////////
 
@@ -545,7 +545,10 @@ implements
 	}
 
 	#[Code\Info('Reindex this dataset using the specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): int|string|array<k,v>|NULL|FALSE')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): NULL', 'Leave key and value unchanged.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): FALSE', 'Remove key and data from set.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): int|string', 'Move existing data to specified key.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): array<k,v>', 'Move data to the specified key with the specified data.')]
 	#[Code\Added('2026-10-31')]
 	public function
 	ReindexKeyValue(callable $Func):

@@ -21,8 +21,6 @@ ob_start();
 
 ////////////////////////////////////////////////////////////////////////////////
 
-echo "## Class: `{$Doc->GetFQCN()}`\n\n";
-
 ($Doc->Methods)
 ->Distill(
 	fn(Nether\Meta\Sensei\ClassMethodDoc $Method)
@@ -32,13 +30,9 @@ echo "## Class: `{$Doc->GetFQCN()}`\n\n";
 	)
 )
 ->Each(function(Nether\Meta\Sensei\ClassMethodDoc $Method) {
+	printf("## `%s`\n", $Method->Name);
 	printf(
-		"## %s\n",
-		$Method->Name
-	);
-
-	printf(
-		"```\n%s( %s ): %s;\n```\n",
+		"```php\n%s( %s ): %s;\n```\n",
 		match(TRUE) {
 			($Method->Constructor)
 			=> 'new Datastore',
@@ -56,6 +50,29 @@ echo "## Class: `{$Doc->GetFQCN()}`\n\n";
 	echo "\n";
 	echo "{$Method->GetInfo()}\n\n";
 	echo "\n";
+
+	$ArgInfo = (
+		($Method->Annotations)
+		->Distill(fn(Nether\Meta\Sensei\AnnotationDoc $A)=> $A->Object instanceof Nether\Meta\Code\Arg)
+		->Map(fn(Nether\Meta\Sensei\AnnotationDoc $A)=> $A->Object)
+	);
+
+	if($ArgInfo->Count()) {
+		$ArgInfo->Each(function(Nether\Meta\Code\Arg $Arg) {
+
+			printf("> `%s`: `%s`\n\n", $Arg->Name, $Arg->Type);
+
+			if($Arg->Info)
+			printf("%s\n\n", $Arg->Info);
+			else
+			print("\n\n");
+		});
+
+		echo "\n";
+	}
+
+	echo "\n";
+
 	return;
 });
 

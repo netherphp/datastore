@@ -127,7 +127,7 @@ class ClassMethodDoc {
 		$Output = [ ];
 
 		foreach($this->Parameters as $P) {
-			$Output[] = "{$P->Type} {$P->Name}";
+			$Output[] = "{$P->Type} \${$P->Name}";
 		}
 
 		if(!count($Output))
