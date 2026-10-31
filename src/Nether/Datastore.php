@@ -286,7 +286,6 @@ implements
 	}
 
 	#[Code\Info('Sort the dataset by its keys.')]
-	#[Code\Arg('Func', 'fn(mixed $A, mixed $B): int')]
 	#[Code\Added('2026-10-31')]
 	public function
 	Shuffle():
