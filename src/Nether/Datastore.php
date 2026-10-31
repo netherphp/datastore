@@ -301,7 +301,8 @@ implements
 	#[Code\Arg('Func', 'fn(mixed $A, mixed $B): int')]
 	#[Code\Added('2026-10-31')]
 	public function
-	SortByKey(?callable $Func=NULL) {
+	SortByKey(?callable $Func=NULL):
+	static {
 
 		if(is_callable($Func))
 		uksort($this->Dataset, $Func);
@@ -315,7 +316,8 @@ implements
 	#[Code\Arg('Func', 'fn(mixed $A, mixed $B): int')]
 	#[Code\Added('2026-10-31')]
 	public function
-	SortByValue(?callable $Func=NULL) {
+	SortByValue(?callable $Func=NULL):
+	static {
 
 		if(is_callable($Func))
 		uasort($this->Dataset, $Func);
@@ -607,6 +609,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Added('2026-10-26')]
+	#[Code\Info('Factory style constructor.')]
 	static public function
 	New(iterable $Input=[]):
 	static {
@@ -619,7 +622,7 @@ implements
 	################################################################
 	## interface: ArrayAccess ######################################
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	OffsetExists(mixed $Key):
@@ -628,7 +631,7 @@ implements
 		return $this->Has($Key);
 	}
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	OffsetGet(mixed $Key):
@@ -637,7 +640,7 @@ implements
 		return $this->Get($Key);
 	}
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	OffsetSet(mixed $Key, mixed $Val):
@@ -647,7 +650,7 @@ implements
 		return;
 	}
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	OffsetUnset(mixed $Key):
@@ -660,7 +663,7 @@ implements
 	################################################################
 	## interface: Iterator #########################################
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	Current():
@@ -669,7 +672,7 @@ implements
 		return current($this->Dataset);
 	}
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	Key():
@@ -678,7 +681,7 @@ implements
 		return key($this->Dataset);
 	}
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	Next():
@@ -688,7 +691,7 @@ implements
 		return;
 	}
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	Rewind():
@@ -698,7 +701,7 @@ implements
 		return;
 	}
 
-	/** @internal */
+	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
 	public function
 	Valid():

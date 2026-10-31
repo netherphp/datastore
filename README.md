@@ -1,6 +1,10 @@
-# Nether\Datastore
+# NetherPHP: Datastore
 
-Provides a data collection object that is a redux of the Nether\Common\Datastore rebuilt with the lessons learned from the original. It's primary purpose is to make PHP's API more sane by having consistent callable argument orders, naming, etc, whilst working upon arrays of data.
+Provides a data collection object that is a redux of the Nether\Common\Datastore rebuilt with the lessons learned from the original. It's primary purpose is to make PHP's API more sane by having consistent callable argument orders, naming, etc, whilst working with arrays of data.
+
+# Documentation
+
+[View on Github Wiki](https://github.com/netherphp/datastore/wiki/API:-Nether%5CDatastore)
 
 # TODO
 
