@@ -181,6 +181,23 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodIsEmpty():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$this->assertFalse($Store->IsEmpty());
+
+		$Store->Import([]);
+		$this->assertTrue($Store->IsEmpty());
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Test]
+	public function
 	MethodHas():
 	void {
 
@@ -231,6 +248,20 @@ extends TestCase {
 
 		$Store->Unset('two');
 		$this->assertFalse($Store->Has('two'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodClear():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$this->assertEquals(static::DatasetSimpleCount, $Store->Count());
+
+		$Store->Clear();
+		$this->assertEquals(0, $Store->Count());
 
 		return;
 	}
@@ -334,20 +365,6 @@ extends TestCase {
 		return;
 	}
 
-	#[Test]
-	public function
-	MethodListify():
-	void {
-
-		$Map = new Datastore(static::DatasetSimpleMap);
-		$this->assertFalse($Map->IsList());
-
-		$Map->Listify();
-		$this->assertTrue($Map->IsList());
-
-		return;
-	}
-
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -411,7 +428,9 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleList);
-		$Store->Filter(fn($V)=> $V === 'two')->Listify();
+		$Store->Filter(fn($V)=> $V === 'two')->Import(
+			array_values($Store->Export())
+		);
 
 		$this->assertEquals(1, $Store->Count());
 		$this->assertEquals('two', $Store->Get(0));
@@ -440,7 +459,7 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleList);
-		$Other = $Store->Distill(fn($V)=> $V === 'two')->Listify();
+		$Other = $Store->Distill(fn($V)=> $V === 'two')->Reindex();
 
 		$this->assertNotEquals(
 			spl_object_id($Store),
@@ -562,6 +581,53 @@ extends TestCase {
 		$this->assertEquals('two:4', $Store->Get('two'));
 		$this->assertEquals('three:9', $Store->Get('three'));
 		
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodReindex():
+	void {
+
+		$Map = new Datastore(static::DatasetSimpleMap);
+		$this->assertFalse($Map->IsList());
+
+		$Map->Reindex();
+		$this->assertTrue($Map->IsList());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodReindexKeyValue():
+	void {
+
+		$Map = new Datastore([
+			'a' => 1,
+			'b' => 2,
+			'c' => 3,
+			'd' => 4
+		]);
+
+		$Map->ReindexKeyValue(function(mixed $K, mixed $V) {
+			if($K === 'a') return FALSE;
+			if($K === 'b') return NULL;
+			if($K === 'c') return 'C';
+			if($K === 'd') return [ 'D', 'DEEEE' ];
+		});
+
+		$this->assertEquals(3, $Map->Count());
+
+		$this->assertFalse($Map->Has('a'));
+		$this->assertTrue($Map->Has('b'));
+		$this->assertTrue($Map->Has('C'));
+		$this->assertTrue($Map->Has('D'));
+
+		$this->assertEquals(2, $Map->Get('b'));
+		$this->assertEquals(3, $Map->Get('C'));
+		$this->assertEquals('DEEEE', $Map->Get('D'));
+
 		return;
 	}
 

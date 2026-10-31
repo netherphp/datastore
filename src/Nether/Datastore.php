@@ -178,13 +178,13 @@ implements
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
-	#[Code\Info('Get how many items are in this dataset.')]
-	#[Code\Added('2026-10-27')]
+	#[Code\Info('Check if the dataset has had anything put into it.')]
+	#[Code\Added('2026-10-31')]
 	public function
-	Count():
-	int {
+	IsEmpty():
+	bool {
 
-		return count($this->Dataset);
+		return ($this->Count() === 0);
 	}
 
 	#[Code\Info('Check if this dataset is a "list" meaning cleanly numerically indexed.')]
@@ -194,6 +194,18 @@ implements
 	bool {
 
 		return array_is_list($this->Dataset);
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Get how many items are in this dataset.')]
+	#[Code\Added('2026-10-27')]
+	public function
+	Count():
+	int {
+
+		return count($this->Dataset);
 	}
 
 	#[Code\Info('Check if a key exists in the dataset.')]
@@ -251,16 +263,19 @@ implements
 		return $this;
 	}
 
-	#[Code\Info('Turn this dataset into a cleanly numerically indexed list.')]
-	#[Code\Added('2026-10-27')]
+	#[Code\Info('Empty the entire dataset.')]
+	#[Code\Added('2026-10-31')]
 	public function
-	Listify():
+	Clear():
 	static {
 
-		$this->Dataset = array_values($this->Dataset);
+		$this->Import([]);
 
 		return $this;
 	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Push a new item onto the end of the dataset.')]
 	#[Code\Added('2026-10-27')]
@@ -306,7 +321,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Run specified callable for every item in this dataset.')]
-	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Value): void')]
 	#[Code\Added('2026-10-26')]
 	public function
 	Each(callable $Func, mixed $Args=NULL):
@@ -321,7 +336,7 @@ implements
 	}
 
 	#[Code\Info('Run specified callable for every item in this dataset.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): void')]
 	#[Code\Added('2026-10-26')]
 	public function
 	EachKeyValue(callable $Func, mixed $Args=NULL):
@@ -338,7 +353,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Modify this dataset using specified filter callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Value): bool $Keep')]
 	#[Code\Added('2026-10-27')]
 	public function
 	Filter(callable $Func):
@@ -350,7 +365,7 @@ implements
 	}
 
 	#[Code\Info('Modify this dataset using specified filter callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): bool $Keep')]
 	#[Code\Added('2026-10-27')]
 	public function
 	FilterKeyValue(callable $Func):
@@ -368,7 +383,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Distill a new dataset using specified filter callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Value): bool $Keep')]
 	#[Code\Added('2026-10-27')]
 	public function
 	Distill(callable $Func):
@@ -380,7 +395,7 @@ implements
 	}
 
 	#[Code\Info('Distill a new dataset using specified filter callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): bool $Keep')]
 	#[Code\Added('2026-10-27')]
 	public function
 	DistillKeyValue(callable $Func):
@@ -398,7 +413,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Map a new dataset mapped using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Value): mixed $ValueUpdate')]
 	#[Code\Added('2026-10-28')]
 	public function
 	Map(callable $FnVal):
@@ -413,7 +428,7 @@ implements
 	}
 
 	#[Code\Info('Map a new dataset mapped using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): mixed $ValueUpdate')]
 	#[Code\Added('2026-10-28')]
 	public function
 	MapKeyValue(callable $FnKeyVal):
@@ -434,7 +449,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Remap this dataset using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Value): mixed $ValueUpdate')]
 	#[Code\Added('2026-10-28')]
 	public function
 	Remap(callable $FnKey):
@@ -449,7 +464,7 @@ implements
 	}
 
 	#[Code\Info('Remap this dataset using specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value)')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): mixed $ValueUpdate')]
 	#[Code\Added('2026-10-28')]
 	public function
 	RemapKeyValue(callable $FnKeyVal):
@@ -457,6 +472,80 @@ implements
 
 		foreach($this->Dataset as $K => $V)
 		$this->Set($K, $FnKeyVal($K, $V));
+
+		////////
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Reindex dataset into cleanly numerically indexed list.')]
+	#[Code\Added('2026-10-31')]
+	public function
+	Reindex():
+	static {
+
+		$this->Dataset = array_values($this->Dataset);
+
+		return $this;
+	}
+
+	#[Code\Info('Reindex this dataset using the specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): int|string|array|NULL|FALSE')]
+	#[Code\Added('2026-10-31')]
+	public function
+	ReindexKeyValue(callable $Func):
+	static {
+
+		$Map = $this->MapKeyValue($Func);
+		$Set = [];
+		$Key = NULL;
+		$Val = NULL;
+
+		////////
+
+		foreach($Map as $Key => $Val) {
+
+			// if the callable returns a boolean false then drop the
+			// field/value from the set.
+
+			if($Val === FALSE) {
+				continue;
+			}
+
+			// if the callable returns a null then keep this field as it
+			// already was.
+
+			if($Val === NULL) {
+				$Set[$Key] = $this->Get($Key);
+				continue;
+			}
+
+			// if the callable returns a string or int then rewrite
+			// this field to the new key name.
+
+			if(is_string($Val) || is_int($Val)) {
+				$Set[$Val] = $this->Get($Key);
+				continue;
+			}
+
+			// if the callable returns an array key-value pair then
+			// rewrite this field to the new key name and with the
+			// new value.
+
+			if(is_array($Val) && (count($Val) === 2))
+			if(is_int($Val[0]) || is_string($Val[0])) {
+				$Set[$Val[0]] = $Val[1];
+				continue;
+			}
+			
+			// otherwise, explode.
+
+			throw new Datastore\Error\ReindexFormatInvalid($Val);
+		}
+
+		$this->Import($Set);
 
 		////////
 
