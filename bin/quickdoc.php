@@ -48,7 +48,7 @@ ob_start();
 	);
 
 	echo "\n";
-	echo "{$Method->GetInfo()}\n\n";
+	echo "{$Method->GetInfo()}\n";
 	echo "\n";
 
 	$ArgInfo = (
@@ -60,12 +60,12 @@ ob_start();
 	if($ArgInfo->Count()) {
 		$ArgInfo->Each(function(Nether\Meta\Code\Arg $Arg) {
 
-			printf("> `%s`: `%s`\n\n", $Arg->Name, $Arg->Type);
+			printf("> `%s`: `%s`\n", $Arg->Name, $Arg->Type);
 
 			if($Arg->Info)
-			printf("%s\n\n", $Arg->Info);
+			printf("\n%s\n", $Arg->Info);
 			else
-			print("\n\n");
+			print("\n");
 		});
 
 		echo "\n";
