@@ -268,6 +268,26 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodCopy():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$Fresh = $Store->Copy();
+
+		$this->assertNotEquals(
+			spl_object_id($Store),
+			spl_object_id($Fresh)
+		);
+
+		$Store->Clear();
+		$this->assertEquals(0, $Store->Count());
+		$this->assertEquals(static::DatasetSimpleCount, $Fresh->Count());
+
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodDefine():
 	void {
 
@@ -290,6 +310,115 @@ extends TestCase {
 	
 		return;
 	}
+
+	#[Test]
+	public function
+	MethodShuffle():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+		$Last = json_encode($Store->Export());
+		$Shuffed = NULL;
+		$Tries = 500;
+		$ComeOnNow = 0;
+
+		for($Loop = 0; $Loop < $Tries; $Loop++) {
+			$Store->Shuffle();
+			$Shuffed = json_encode($Store->Export());
+
+			if($Shuffed === $Last)			
+			$ComeOnNow++;
+
+			$Last = $Shuffed;
+			continue;
+		}
+
+		$this->assertNotEquals(
+			$Tries, $ComeOnNow,
+			'seeing this means you should buy a lottery ticket. or it might be fucked, idk.'
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodSortByKey():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+
+		$Store->SortByKey();
+		$Store->Reindex();
+
+		$this->assertEquals(1, $Store->Get(0));
+		$this->assertEquals(3, $Store->Get(1));
+		$this->assertEquals(2, $Store->Get(2));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodSortByValue():
+	void {
+
+		$Store = new Datastore(
+			array_reverse(static::DatasetSimpleMap, TRUE)
+		);
+
+		$Store->SortByValue();
+		$Store->Reindex();
+
+		$this->assertEquals(1, $Store->Get(0));
+		$this->assertEquals(2, $Store->Get(1));
+		$this->assertEquals(3, $Store->Get(2));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodSortByKeyCallable():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+
+		$Store->SortByKey(function(mixed $A, mixed $B) {
+			return $A <=> $B;
+		});
+
+		$Store->Reindex();
+
+		$this->assertEquals(1, $Store->Get(0));
+		$this->assertEquals(3, $Store->Get(1));
+		$this->assertEquals(2, $Store->Get(2));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodSortByValueCallable():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+
+		$Store->SortByValue(function(mixed $A, mixed $B) {
+			return $B <=> $A;
+		});
+
+		$Store->Reindex();
+
+		$this->assertEquals(3, $Store->Get(0));
+		$this->assertEquals(2, $Store->Get(1));
+		$this->assertEquals(1, $Store->Get(2));
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Test]
 	public function
@@ -699,6 +828,5 @@ extends TestCase {
 
 		return;
 	}
-
 
 };

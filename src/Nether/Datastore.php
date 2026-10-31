@@ -274,6 +274,57 @@ implements
 		return $this;
 	}
 
+	#[Code\Info('Perform a shallow copy of the dataset.')]
+	#[Code\Added('2026-10-31')]
+	public function
+	Copy():
+	static {
+
+		$Fresh = new static($this->Export());
+
+		return $Fresh;
+	}
+
+	#[Code\Info('Sort the dataset by its keys.')]
+	#[Code\Arg('Func', 'fn(mixed $A, mixed $B): int')]
+	#[Code\Added('2026-10-31')]
+	public function
+	Shuffle():
+	static {
+
+		shuffle($this->Dataset);
+
+		return $this;
+	}
+
+	#[Code\Info('Sort the dataset by its keys.')]
+	#[Code\Arg('Func', 'fn(mixed $A, mixed $B): int')]
+	#[Code\Added('2026-10-31')]
+	public function
+	SortByKey(?callable $Func=NULL) {
+
+		if(is_callable($Func))
+		uksort($this->Dataset, $Func);
+		else
+		ksort($this->Dataset);
+
+		return $this;
+	}
+
+	#[Code\Info('Sort the dataset by its values.')]
+	#[Code\Arg('Func', 'fn(mixed $A, mixed $B): int')]
+	#[Code\Added('2026-10-31')]
+	public function
+	SortByValue(?callable $Func=NULL) {
+
+		if(is_callable($Func))
+		uasort($this->Dataset, $Func);
+		else
+		asort($this->Dataset);
+
+		return $this;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -492,7 +543,7 @@ implements
 	}
 
 	#[Code\Info('Reindex this dataset using the specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): int|string|array|NULL|FALSE')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value): int|string|array<k,v>|NULL|FALSE')]
 	#[Code\Added('2026-10-31')]
 	public function
 	ReindexKeyValue(callable $Func):
