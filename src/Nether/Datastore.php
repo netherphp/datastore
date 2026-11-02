@@ -370,6 +370,17 @@ implements
 	}
 
 	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Join together as a string using specified delimiter.')]
+	#[Code\Added('2026-11-01')]
+	public function
+	Join(string $Delim):
+	string {
+
+		return implode($Delim, $this->Dataset);
+	}
+
+	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Run specified callable for every item in this dataset.')]
@@ -617,6 +628,25 @@ implements
 	static {
 
 		$Store = new static($Input);
+
+		return $Store;
+	}
+
+	#[Code\Added('2026-11-01')]
+	#[Code\Info('Factory to create datastore by string explosion.')]
+	static public function
+	FromString(string $Input, string $Delim=''):
+	static {
+
+		$Bits = match(TRUE){
+			($Delim === '')
+			=> mb_str_split($Input, 1),
+
+			default
+			=> explode($Delim, $Input)
+		};
+
+		$Store = new static($Bits);
 
 		return $Store;
 	}

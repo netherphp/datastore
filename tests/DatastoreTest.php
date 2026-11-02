@@ -69,6 +69,23 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	FromStringFactory():
+	void {
+
+		$Store = Datastore::FromString('asdf');
+		$this->assertEquals(4, $Store->Count());
+
+		$Store = Datastore::FromString('as,df', ',');
+		$this->assertEquals(2, $Store->Count());
+
+		$Store = Datastore::FromString('as,df', '');
+		$this->assertEquals(5, $Store->Count());
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -189,6 +206,20 @@ extends TestCase {
 
 		$Store->Import([]);
 		$this->assertTrue($Store->IsEmpty());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodIsList():
+	void {
+
+		$List = new Datastore(static::DatasetSimpleList);
+		$Map = new Datastore(static::DatasetSimpleMap);
+
+		$this->assertTrue($List->IsList());
+		$this->assertFalse($Map->IsList());
 
 		return;
 	}
@@ -482,14 +513,13 @@ extends TestCase {
 
 	#[Test]
 	public function
-	MethodIsList():
+	MethodJoin():
 	void {
 
-		$List = new Datastore(static::DatasetSimpleList);
-		$Map = new Datastore(static::DatasetSimpleMap);
+		$Store = new Datastore(static::DatasetSimpleList);
+		$Result = $Store->Join(', ');
 
-		$this->assertTrue($List->IsList());
-		$this->assertFalse($Map->IsList());
+		$this->assertEquals('one, two, three', $Result);
 
 		return;
 	}
