@@ -294,12 +294,60 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodLoad_FileFormatInvalidJSON2():
+	void {
+
+		$Store = new Datastore;
+		$Filename = LocalTouchTempFile('nether-datastore-readfmt', 'json');
+		$Err = NULL;
+
+		file_put_contents($Filename, 'shiggity shiggity shwa');
+
+		try{ $Store->Load($Filename); }
+		catch(Exception $Err) { }
+
+		unlink($Filename);
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileFormatInvalid::class,
+			$Err
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodLoad_FileFormatInvalidPHSON():
 	void {
 
 		$Store = new Datastore;
 		$Filename = LocalTouchTempFile('nether-datastore-readfmt', 'phson');
 		$Err = NULL;
+
+		try{ $Store->Load($Filename); }
+		catch(Exception $Err) { }
+
+		unlink($Filename);
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileFormatInvalid::class,
+			$Err
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodLoad_FileFormatInvalidPHSON2():
+	void {
+
+		$Store = new Datastore;
+		$Filename = LocalTouchTempFile('nether-datastore-readfmt', 'phson');
+		$Err = NULL;
+
+		file_put_contents($Filename, 'shiggity shiggity shwa');
 
 		try{ $Store->Load($Filename); }
 		catch(Exception $Err) { }

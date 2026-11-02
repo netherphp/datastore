@@ -6,8 +6,8 @@ namespace Nether;
 use ArrayAccess;
 use Iterator;
 use Countable;
-use JsonSerializable;
-use Nether\Datastore\Error\FileAccessUnwritable;
+use Exception;
+
 use Nether\Meta\Code;
 
 ################################################################################
@@ -102,7 +102,10 @@ implements
 	LoadPHSON(string $Filename):
 	void {
 
-		$Data = unserialize(file_get_contents($Filename));
+		// unserialise still emits warnings instead of throwing for
+		// the most basic case of invalid data smh
+
+		$Data = @unserialize(file_get_contents($Filename));
 
 		if(!is_array($Data))
 		throw new Datastore\Error\FileFormatInvalid($Filename);
@@ -133,11 +136,11 @@ implements
 
 		if(!file_exists($Filename)) {
 			if(!is_writable(dirname($Filename)))
-			throw new FileAccessUnwritable(dirname($Filename));
+			throw new Datastore\Error\FileAccessUnwritable(dirname($Filename));
 		}
 
 		elseif(!is_writable($Filename))
-		throw new FileAccessUnwritable($Filename);
+		throw new Datastore\Error\FileAccessUnwritable($Filename);
 
 		////////
 
