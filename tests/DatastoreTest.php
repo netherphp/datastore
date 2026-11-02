@@ -513,6 +513,22 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodKeys():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Keys = $Store->Keys();
+
+		$this->assertInstanceOf(Datastore::class, $Keys);
+		$this->assertEquals('one', $Keys[0]);
+		$this->assertEquals('two', $Keys[1]);
+		$this->assertEquals('three', $Keys[2]);
+
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodJoin():
 	void {
 

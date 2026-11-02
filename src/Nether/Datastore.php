@@ -371,6 +371,53 @@ implements
 
 	////////////////////////////////////////////////////////////////
 
+	#[Code\Info('Append input to end of dataset overwriting existing keys.')]
+	#[Code\Todo('2026-11-01')]
+	public function
+	Merge():
+	static {
+
+		return $this;
+	}
+
+	#[Code\Info('Prepend input to start of dataset overwriting existing keys.')]
+	#[Code\Todo('2026-11-01')]
+	public function
+	MergeStart():
+	static {
+
+		return $this;
+	}
+
+	#[Code\Info('Append input to end of dataset without overwriting existing keys.')]
+	#[Code\Todo('2026-11-01')]
+	public function
+	Blend():
+	static {
+
+		return $this;
+	}
+
+	#[Code\Info('Prepend input to start of dataset without overwriting existing keys.')]
+	#[Code\Todo('2026-11-01')]
+	public function
+	BlendStart():
+	static {
+
+		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Return a list of the keys in this dataset.')]
+	#[Code\Added('2026-11-01')]
+	public function
+	Keys():
+	static {
+
+		return new static(array_keys($this->Dataset));
+	}
+
 	#[Code\Info('Join together as a string using specified delimiter.')]
 	#[Code\Added('2026-11-01')]
 	public function
