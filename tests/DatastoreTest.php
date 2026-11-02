@@ -17,6 +17,9 @@ extends TestCase {
 	const array
 	DatasetSimpleMap = [ 'one' => 1, 'two' => 2, 'three' => 3 ];
 
+	const array
+	DatasetSimpleMapOverlap = [ 'three' => -3, 'four' => 4, 'five' => 5 ];
+
 	const int
 	DatasetSimpleCount = 3;
 
@@ -529,6 +532,46 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodValues():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Vals = $Store->Values();
+
+		$this->assertInstanceOf(Datastore::class, $Vals);
+		$this->assertEquals(1, $Vals[0]);
+		$this->assertEquals(2, $Vals[1]);
+		$this->assertEquals(3, $Vals[2]);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodFirstKeyAndValue():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertEquals('one', $Store->FirstKey());
+		$this->assertEquals(1, $Store->FirstValue());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodLastKeyAndValue():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertEquals('three', $Store->LastKey());
+		$this->assertEquals(3, $Store->LastValue());
+
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodJoin():
 	void {
 
@@ -536,6 +579,98 @@ extends TestCase {
 		$Result = $Store->Join(', ');
 
 		$this->assertEquals('one, two, three', $Result);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodMerge():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->Merge(static::DatasetSimpleMapOverlap);
+
+		// 3 should have been overwritten.
+
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(-3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: one two three four five
+
+		$this->assertEquals('one', $Store->FirstKey());
+		$this->assertEquals('five', $Store->LastKey());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodMergeStart():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->MergeStart(static::DatasetSimpleMapOverlap);
+
+		// 3 should have been overwritten.
+
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(-3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: four five one two three
+
+		$this->assertEquals('four', $Store->FirstKey());
+		$this->assertEquals('three', $Store->LastKey());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodBlend():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->Blend(static::DatasetSimpleMapOverlap);
+
+		// 3 should not have been overwritten.
+
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: one two three four five
+
+		$this->assertEquals('one', $Store->FirstKey());
+		$this->assertEquals('five', $Store->LastKey());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodBlendStart():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->BlendStart(static::DatasetSimpleMapOverlap);
+
+		// 3 should not have been overwritten.
+		
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: four five one two three
+
+		$this->assertEquals('four', $Store->FirstKey());
+		$this->assertEquals('three', $Store->LastKey());
 
 		return;
 	}

@@ -372,19 +372,57 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Append input to end of dataset overwriting existing keys.')]
-	#[Code\Todo('2026-11-01')]
+	#[Code\Todo('2026-11-02')]
 	public function
-	Merge():
+	Merge(iterable $Input):
 	static {
+
+		if(!is_array($Input))
+		$Input = iterator_to_array($Input);
+
+		////////
+
+		$this->Dataset = array_merge(
+			$this->Dataset,
+			$Input
+		);
 
 		return $this;
 	}
 
 	#[Code\Info('Prepend input to start of dataset overwriting existing keys.')]
-	#[Code\Todo('2026-11-01')]
+	#[Code\Todo('2026-11-02')]
 	public function
-	MergeStart():
+	MergeStart(iterable $Input):
 	static {
+
+		$Pre = [];
+		$Key = NULL;
+		$Val = NULL;
+
+		////////
+
+		if(!is_array($Input))
+		$Input = iterator_to_array($Input);
+
+		////////
+
+		foreach($Input as $Key => $Val) {
+			if(!$this->Has($Key)) {
+				$Pre[$Key] = $Val;
+				continue;
+			}
+
+			$this->Dataset[$Key] = $Val;
+			continue;
+		}
+
+		$this->Dataset = array_merge(
+			$Pre,
+			$this->Dataset
+		);
+
+		////////
 
 		return $this;
 	}
@@ -392,8 +430,26 @@ implements
 	#[Code\Info('Append input to end of dataset without overwriting existing keys.')]
 	#[Code\Todo('2026-11-01')]
 	public function
-	Blend():
+	Blend(iterable $Input):
 	static {
+
+		$Key = NULL;
+		$Val = NULL;
+
+		////////
+
+		if(!is_array($Input))
+		$Input = iterator_to_array($Input);
+
+		////////
+
+		foreach($Input as $Key => $Val) {
+			if($this->Has($Key))
+			continue;
+
+			$this->Dataset[$Key] = $Val;
+			continue;
+		}
 
 		return $this;
 	}
@@ -401,8 +457,34 @@ implements
 	#[Code\Info('Prepend input to start of dataset without overwriting existing keys.')]
 	#[Code\Todo('2026-11-01')]
 	public function
-	BlendStart():
+	BlendStart(iterable $Input):
 	static {
+
+		$Pre = [];
+		$Key = NULL;
+		$Val = NULL;
+
+		////////
+
+		if(!is_array($Input))
+		$Input = iterator_to_array($Input);
+
+		////////
+
+		foreach($Input as $Key => $Val) {
+			if($this->Has($Key))
+			continue;
+
+			$Pre[$Key] = $Val;
+			continue;
+		}
+
+		$this->Dataset = array_merge(
+			$Pre,
+			$this->Dataset
+		);
+
+		////////
 
 		return $this;
 	}
@@ -418,6 +500,15 @@ implements
 		return new static(array_keys($this->Dataset));
 	}
 
+	#[Code\Info('Return a list of the values in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	Values():
+	static {
+
+		return new static(array_values($this->Dataset));
+	}
+
 	#[Code\Info('Join together as a string using specified delimiter.')]
 	#[Code\Added('2026-11-01')]
 	public function
@@ -425,6 +516,42 @@ implements
 	string {
 
 		return implode($Delim, $this->Dataset);
+	}
+
+	#[Code\Info('Return the first key in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	FirstKey():
+	mixed {
+
+		return array_key_first($this->Dataset);
+	}
+
+	#[Code\Info('Return the first value in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	FirstValue():
+	mixed {
+
+		return array_first($this->Dataset);
+	}
+
+	#[Code\Info('Return the first key in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	LastKey():
+	mixed {
+
+		return array_key_last($this->Dataset);
+	}
+
+	#[Code\Info('Return the last value in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	LastValue():
+	mixed {
+
+		return array_last($this->Dataset);
 	}
 
 	////////////////////////////////////////////////////////////////
