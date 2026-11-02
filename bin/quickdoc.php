@@ -6,31 +6,39 @@ $Outfile = sprintf('%s/docs/api.md', $AppRoot);
 
 require(sprintf('%s/vendor/autoload.php', $AppRoot));
 
+use Nether\Meta\Sensei\ClassMethodDoc;
+
 ################################################################################
 ################################################################################
 
-// atm the only real purpose of this is to quickly dump formatted text to
-// paste into the readme.
+function
+FilterUserlandMethods(ClassMethodDoc $Method):
+bool {
+	return (TRUE
+		&& ($Method->Access === 'public')
+		&& !($Method->HasAnnotation(Nether\Meta\Code\Internal::class))
+	);
+};
 
-$Doc = new Nether\Meta\Sensei\ClassDoc(Nether\Datastore::class);
-$Buffer = NULL;-
+function
+SortUserlandMethods(ClassMethodDoc $A, ClassMethodDoc $B):
+int {
 
-////////////////////////////////////////////////////////////////////////////////
+	if($A->Static && !$B->Static)
+	return 1;
 
-ob_start();
+	if($B->Static && !$A->Static)
+	return -1;
 
-////////////////////////////////////////////////////////////////////////////////
+	return $A->Name <=> $B->Name;
+};
 
-($Doc->Methods)
-->Distill(
-	fn(Nether\Meta\Sensei\ClassMethodDoc $Method)
-	=> (
-		($Method->Access === 'public')
-		&& !$Method->HasAnnotation(Nether\Meta\Code\Internal::class)
-	)
-)
-->Each(function(Nether\Meta\Sensei\ClassMethodDoc $Method) {
+function
+PrintMethodSignature(ClassMethodDoc $Method):
+void {
+
 	printf("## `%s`\n", $Method->Name);
+
 	printf(
 		"```php\n%s( %s ): %s;\n```\n",
 		match(TRUE) {
@@ -47,14 +55,34 @@ ob_start();
 		$Method->GetReturnSignature()
 	);
 
+	return;
+};
+
+function
+PrintMethodInfo(ClassMethodDoc $Method):
+void {
+
 	echo "\n";
 	echo "{$Method->GetInfo()}\n";
 	echo "\n";
 
+	return;
+};
+
+function
+PrintMethodArgInfo(ClassMethodDoc $Method):
+void {
+
 	$ArgInfo = (
 		($Method->Annotations)
-		->Distill(fn(Nether\Meta\Sensei\AnnotationDoc $A)=> $A->Object instanceof Nether\Meta\Code\Arg)
-		->Map(fn(Nether\Meta\Sensei\AnnotationDoc $A)=> $A->Object)
+		->Distill(
+			fn(Nether\Meta\Sensei\AnnotationDoc $A)
+			=> $A->Object instanceof Nether\Meta\Code\Arg
+		)
+		->Map(
+			fn(Nether\Meta\Sensei\AnnotationDoc $A)
+			=> $A->Object
+		)
 	);
 
 	if($ArgInfo->Count()) {
@@ -71,8 +99,26 @@ ob_start();
 		echo "\n";
 	}
 
-	echo "\n";
+	return;
+};
 
+////////////////////////////////////////////////////////////////////////////////
+
+$Doc = new Nether\Meta\Sensei\ClassDoc(Nether\Datastore::class);
+$Buffer = NULL;
+
+ob_start();
+
+////////////////////////////////////////////////////////////////////////////////
+
+($Doc->Methods)
+->Distill(FilterUserlandMethods(...))
+->SortByValue(SortUserlandMethods(...))
+->Each(function(Nether\Meta\Sensei\ClassMethodDoc $Method) {
+	PrintMethodSignature($Method);
+	PrintMethodInfo($Method);
+	PrintMethodArgInfo($Method);
+	echo "\n";
 	return;
 });
 

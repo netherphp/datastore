@@ -369,6 +369,42 @@ implements
 		return array_shift($this->Dataset);
 	}
 
+	#[Code\Info('Return the first key in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	FirstKey():
+	mixed {
+
+		return array_key_first($this->Dataset);
+	}
+
+	#[Code\Info('Return the first value in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	FirstValue():
+	mixed {
+
+		return array_first($this->Dataset);
+	}
+
+	#[Code\Info('Return the first key in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	LastKey():
+	mixed {
+
+		return array_key_last($this->Dataset);
+	}
+
+	#[Code\Info('Return the last value in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	LastValue():
+	mixed {
+
+		return array_last($this->Dataset);
+	}
+
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Append input to end of dataset overwriting existing keys.')]
@@ -516,42 +552,6 @@ implements
 	string {
 
 		return implode($Delim, $this->Dataset);
-	}
-
-	#[Code\Info('Return the first key in this dataset.')]
-	#[Code\Added('2026-11-02')]
-	public function
-	FirstKey():
-	mixed {
-
-		return array_key_first($this->Dataset);
-	}
-
-	#[Code\Info('Return the first value in this dataset.')]
-	#[Code\Added('2026-11-02')]
-	public function
-	FirstValue():
-	mixed {
-
-		return array_first($this->Dataset);
-	}
-
-	#[Code\Info('Return the first key in this dataset.')]
-	#[Code\Added('2026-11-02')]
-	public function
-	LastKey():
-	mixed {
-
-		return array_key_last($this->Dataset);
-	}
-
-	#[Code\Info('Return the last value in this dataset.')]
-	#[Code\Added('2026-11-02')]
-	public function
-	LastValue():
-	mixed {
-
-		return array_last($this->Dataset);
 	}
 
 	////////////////////////////////////////////////////////////////
