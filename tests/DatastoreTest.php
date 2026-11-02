@@ -520,7 +520,7 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
-		$Keys = $Store->Keys();
+		$Keys = $Store->GetKeys();
 
 		$this->assertInstanceOf(Datastore::class, $Keys);
 		$this->assertEquals('one', $Keys[0]);
@@ -536,7 +536,7 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
-		$Vals = $Store->Values();
+		$Vals = $Store->GetValues();
 
 		$this->assertInstanceOf(Datastore::class, $Vals);
 		$this->assertEquals(1, $Vals[0]);
@@ -552,8 +552,8 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
-		$this->assertEquals('one', $Store->FirstKey());
-		$this->assertEquals(1, $Store->FirstValue());
+		$this->assertEquals('one', $Store->GetFirstKey());
+		$this->assertEquals(1, $Store->GetFirstValue());
 
 		return;
 	}
@@ -564,8 +564,8 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
-		$this->assertEquals('three', $Store->LastKey());
-		$this->assertEquals(3, $Store->LastValue());
+		$this->assertEquals('three', $Store->GetLastKey());
+		$this->assertEquals(3, $Store->GetLastValue());
 
 		return;
 	}
@@ -600,8 +600,8 @@ extends TestCase {
 
 		// expect: one two three four five
 
-		$this->assertEquals('one', $Store->FirstKey());
-		$this->assertEquals('five', $Store->LastKey());
+		$this->assertEquals('one', $Store->GetFirstKey());
+		$this->assertEquals('five', $Store->GetLastKey());
 
 		return;
 	}
@@ -623,8 +623,8 @@ extends TestCase {
 
 		// expect: four five one two three
 
-		$this->assertEquals('four', $Store->FirstKey());
-		$this->assertEquals('three', $Store->LastKey());
+		$this->assertEquals('four', $Store->GetFirstKey());
+		$this->assertEquals('three', $Store->GetLastKey());
 
 		return;
 	}
@@ -646,8 +646,8 @@ extends TestCase {
 
 		// expect: one two three four five
 
-		$this->assertEquals('one', $Store->FirstKey());
-		$this->assertEquals('five', $Store->LastKey());
+		$this->assertEquals('one', $Store->GetFirstKey());
+		$this->assertEquals('five', $Store->GetLastKey());
 
 		return;
 	}
@@ -669,8 +669,8 @@ extends TestCase {
 
 		// expect: four five one two three
 
-		$this->assertEquals('four', $Store->FirstKey());
-		$this->assertEquals('three', $Store->LastKey());
+		$this->assertEquals('four', $Store->GetFirstKey());
+		$this->assertEquals('three', $Store->GetLastKey());
 
 		return;
 	}

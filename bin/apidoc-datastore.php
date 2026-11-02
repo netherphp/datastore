@@ -1,11 +1,12 @@
 <?php ##########################################################################
 ################################################################################
 
-$AppRoot = dirname(__FILE__, 2);
-$Outfile = sprintf('%s/docs/api.md', $AppRoot);
+define('AppRoot', dirname(__FILE__, 2));
+define('Outfile', sprintf('%s/docs/api-datastore.md', AppRoot));
 
-require(sprintf('%s/vendor/autoload.php', $AppRoot));
+require(sprintf('%s/vendor/autoload.php', AppRoot));
 
+use Nether\Meta\Sensei\ClassDoc;
 use Nether\Meta\Sensei\ClassMethodDoc;
 
 ################################################################################
@@ -32,6 +33,18 @@ int {
 
 	return $A->Name <=> $B->Name;
 };
+
+function
+PrintMethodDoc(ClassMethodDoc $Method):
+void {
+	
+	PrintMethodSignature($Method);
+	PrintMethodInfo($Method);
+	PrintMethodArgInfo($Method);
+	echo "\n";
+
+	return;
+}
 
 function
 PrintMethodSignature(ClassMethodDoc $Method):
@@ -104,7 +117,7 @@ void {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-$Doc = new Nether\Meta\Sensei\ClassDoc(Nether\Datastore::class);
+$Doc = new ClassDoc(Nether\Datastore::class);
 $Buffer = NULL;
 
 ob_start();
@@ -114,18 +127,12 @@ ob_start();
 ($Doc->Methods)
 ->Distill(FilterUserlandMethods(...))
 ->SortByValue(SortUserlandMethods(...))
-->Each(function(Nether\Meta\Sensei\ClassMethodDoc $Method) {
-	PrintMethodSignature($Method);
-	PrintMethodInfo($Method);
-	PrintMethodArgInfo($Method);
-	echo "\n";
-	return;
-});
+->Each(PrintMethodDoc(...));
 
 ////////////////////////////////////////////////////////////////////////////////
 
 $Buffer = ob_get_clean();
-file_put_contents($Outfile, $Buffer);
+file_put_contents(Outfile, $Buffer);
 
 echo $Buffer;
 
