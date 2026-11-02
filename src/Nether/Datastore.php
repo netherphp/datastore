@@ -47,7 +47,7 @@ implements
 
 		$this->Dataset = match(TRUE) {
 			(!is_array($Input))
-			=> [ ... $Input ],
+			=> iterator_to_array($Input),
 
 			default
 			=> $Input
@@ -194,6 +194,24 @@ implements
 	bool {
 
 		return array_is_list($this->Dataset);
+	}
+
+	#[Code\Info('Check if the specified key is the first in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	IsFirstKey(int|string $Key):
+	bool {
+
+		return ($this->GetFirstKey() === $Key);
+	}
+
+	#[Code\Info('Check if the specified key is the last in this dataset.')]
+	#[Code\Added('2026-11-02')]
+	public function
+	IsLastKey(int|string $Key):
+	bool {
+
+		return ($this->GetLastKey() === $Key);
 	}
 
 	////////////////////////////////////////////////////////////////

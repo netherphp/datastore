@@ -5,6 +5,78 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Nether\Datastore;
 
+////////////////////////////////////////////////////////////////////////////////
+
+// this is a work around where at least on windows, files created by tempnam()
+// cannot be unlink()'d even though the same user running the test can manually
+// delete them from that same terminal afterwards.
+
+function
+LocalTempDir():
+string {
+
+	$TempDir = sys_get_temp_dir();
+
+	if(!is_dir($TempDir))
+	mkdir($TempDir, 0777);
+
+	////////
+
+	return $TempDir;
+};
+
+function
+LocalTouchTempFile(string $Prefix, string $Ext='tmp'):
+string {
+
+	$Filename = sprintf(
+		'%s%s%s-%s.%s',
+		LocalTempDir(),
+		DIRECTORY_SEPARATOR,
+		$Prefix,
+		md5(microtime(TRUE)),
+		$Ext
+	);
+
+	touch($Filename);
+
+	////////
+
+	return $Filename;
+};
+
+function
+LocalLockFile(string $Filename):
+void {
+
+	if(PHP_OS_FAMILY === 'Windows')
+	exec(sprintf(
+		'icacls %s /deny Everyone:RW',
+		escapeshellarg($Filename)
+	));
+
+	else
+	chmod($Filename, 0000);
+
+	return;
+};
+
+function
+LocalUnlockFile(string $Filename):
+void {
+
+	if(PHP_OS_FAMILY === 'Windows')
+	exec(sprintf(
+		'icacls %s /remove:d Everyone',
+		escapeshellarg($Filename)
+	));
+
+	else
+	chmod($Filename, 0666);
+
+	return;
+};
+
 ################################################################################
 ################################################################################
 
@@ -74,6 +146,32 @@ extends TestCase {
 
 	#[Test]
 	public function
+	FromIterableNormal():
+	void {
+
+		$Iter = new ArrayIterator(static::DatasetSimpleList);
+		$Data = new Datastore($Iter);
+
+		$this->assertCount(static::DatasetSimpleCount, $Data->Export());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	FromIterableFactory():
+	void {
+
+		$Iter = new ArrayIterator(static::DatasetSimpleList);
+		$Data = Datastore::New($Iter);
+
+		$this->assertCount(static::DatasetSimpleCount, $Data->Export());
+
+		return;
+	}
+
+	#[Test]
+	public function
 	FromStringFactory():
 	void {
 
@@ -124,15 +222,162 @@ extends TestCase {
 
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
+	
+	#[Test]
+	public function
+	MethodLoad_FileNotFound():
+	void {
+
+		$Store = new Datastore;
+		$Filename = 'asdfasdfasdfasdfasdf.lol';
+		$Err = NULL;
+
+		try { $Store->Load($Filename); }
+		catch(Exception $Err) { }
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileNotFound::class,
+			$Err
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodLoad_FileUnreadable():
+	void {
+
+		$Store = new Datastore;
+		$Filename = LocalTouchTempFile('nether-datastore-readlocked');
+		$Err = NULL;
+
+		////////
+
+		LocalLockFile($Filename);
+
+		try { $Store->Load($Filename); }
+		catch(Exception $Err) { }
+
+		LocalUnlockFile($Filename);
+		unlink($Filename);
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileAccessUnreadable::class,
+			$Err
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodLoad_FileFormatInvalidJSON():
+	void {
+
+		$Store = new Datastore;
+		$Filename = LocalTouchTempFile('nether-datastore-readfmt', 'json');
+		$Err = NULL;
+
+		try{ $Store->Load($Filename); }
+		catch(Exception $Err) { }
+
+		unlink($Filename);
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileFormatInvalid::class,
+			$Err
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodLoad_FileFormatInvalidPHSON():
+	void {
+
+		$Store = new Datastore;
+		$Filename = LocalTouchTempFile('nether-datastore-readfmt', 'phson');
+		$Err = NULL;
+
+		try{ $Store->Load($Filename); }
+		catch(Exception $Err) { }
+
+		unlink($Filename);
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileFormatInvalid::class,
+			$Err
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodWrite_DirectoryUnwritable():
+	void {
+
+		$Store = new Datastore;
+		$Err = NULL;
+
+		$Filename = sprintf(
+			'%s%sasdfasdfasdf%sasdfasdfadsf.lol',
+			LocalTempDir(),
+			DIRECTORY_SEPARATOR,
+			DIRECTORY_SEPARATOR
+		);
+
+		// fail to write because the parent directory does not exist.
+
+		try { $Store->Write($Filename); }
+		catch(Exception $Err) { }
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileAccessUnwritable::class,
+			$Err
+		);
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodWrite_FileUnwritable():
+	void {
+
+		$Store = new Datastore;
+		$Err = NULL;
+
+		$Filename = LocalTouchTempFile('nether-datastore-writelocked', 'json');
+		LocalLockFile($Filename);
+
+		// fail to write because the file is unwritable.
+
+		try { $Store->Write($Filename); }
+		catch(Exception $Err) { }
+
+		LocalUnlockFile($Filename);
+		unlink($Filename);
+
+		$this->assertInstanceOf(
+			Datastore\Error\FileAccessUnwritable::class,
+			$Err
+		);
+
+		return;
+	}
 
 	#[Test]
 	public function
 	MethodWriteJSON():
 	void {
 
+		$Err = NULL;
 		$Store = new Datastore(static::DatasetSimpleMap);
 		$Other = new Datastore;
-		$Filename = sprintf('%s.json', @tempnam('temp', 'dt-'));
+		$Filename = LocalTouchTempFile('nether-datastore-writejson', 'json');
 		$Expect = json_encode($Store->Export());
 
 		// test writing a file to disk.
@@ -146,7 +391,7 @@ extends TestCase {
 
 		$Other->Load($Filename);
 		$this->assertCount(static::DatasetSimpleCount, $Other);
-		$this->assertEquals(3, $Other->Get('three'));
+		$this->assertEquals(3, $Other->Get('three'));-
 
 		////////
 
@@ -162,7 +407,7 @@ extends TestCase {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
 		$Other = new Datastore;
-		$Filename = sprintf('%s.phson', @tempnam('temp', 'dt-'));
+		$Filename = LocalTouchTempFile('nether-datastore-writephson', 'phson');
 		$Expect = serialize($Store->Export());
 
 		// test writing a file to disk.
@@ -552,8 +797,14 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
+
 		$this->assertEquals('one', $Store->GetFirstKey());
+
 		$this->assertEquals(1, $Store->GetFirstValue());
+
+		$this->assertTrue($Store->IsFirstKey('one'));
+
+		$this->assertFalse($Store->IsFirstKey('two'));
 
 		return;
 	}
@@ -564,8 +815,14 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
+
 		$this->assertEquals('three', $Store->GetLastKey());
+
 		$this->assertEquals(3, $Store->GetLastValue());
+
+		$this->assertTrue($Store->IsLastKey('three'));
+
+		$this->assertFalse($Store->IsLastKey('two'));
 
 		return;
 	}
@@ -608,11 +865,57 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodMergeIterable():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->Merge(new ArrayIterator(static::DatasetSimpleMapOverlap));
+
+		// 3 should have been overwritten.
+
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(-3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: one two three four five
+
+		$this->assertEquals('one', $Store->GetFirstKey());
+		$this->assertEquals('five', $Store->GetLastKey());
+
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodMergeStart():
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
 		$Store->MergeStart(static::DatasetSimpleMapOverlap);
+
+		// 3 should have been overwritten.
+
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(-3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: four five one two three
+
+		$this->assertEquals('four', $Store->GetFirstKey());
+		$this->assertEquals('three', $Store->GetLastKey());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodMergeStartIterable():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->MergeStart(new ArrayIterator(static::DatasetSimpleMapOverlap));
 
 		// 3 should have been overwritten.
 
@@ -654,11 +957,57 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodBlendIterable():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->Blend(new ArrayIterator(static::DatasetSimpleMapOverlap));
+
+		// 3 should not have been overwritten.
+
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: one two three four five
+
+		$this->assertEquals('one', $Store->GetFirstKey());
+		$this->assertEquals('five', $Store->GetLastKey());
+
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodBlendStart():
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
 		$Store->BlendStart(static::DatasetSimpleMapOverlap);
+
+		// 3 should not have been overwritten.
+		
+		$this->assertEquals(5, $Store->Count());
+		$this->assertEquals(2, $Store['two']);
+		$this->assertEquals(3, $Store['three']);
+		$this->assertEquals(4, $Store['four']);
+
+		// expect: four five one two three
+
+		$this->assertEquals('four', $Store->GetFirstKey());
+		$this->assertEquals('three', $Store->GetLastKey());
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodBlendStartIterable():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$Store->BlendStart(new ArrayIterator(static::DatasetSimpleMapOverlap));
 
 		// 3 should not have been overwritten.
 		
@@ -913,6 +1262,8 @@ extends TestCase {
 	MethodReindexKeyValue():
 	void {
 
+		$Err = NULL;
+
 		$Map = new Datastore([
 			'a' => 1,
 			'b' => 2,
@@ -937,6 +1288,23 @@ extends TestCase {
 		$this->assertEquals(2, $Map->Get('b'));
 		$this->assertEquals(3, $Map->Get('C'));
 		$this->assertEquals('DEEEE', $Map->Get('D'));
+
+		////////
+
+		try {
+			$Map->ReindexKeyvalue(function(mixed $K, mixed $V) {
+				return [ 69 ];
+			});
+		}
+
+		catch(Nether\Datastore\Error\ReindexFormatInvalid $Err) { }
+
+		$this->assertInstanceOf(
+			Nether\Datastore\Error\ReindexFormatInvalid::class,
+			$Err
+		);
+
+		////////
 
 		return;
 	}
