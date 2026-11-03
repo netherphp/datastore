@@ -27,7 +27,7 @@ jobs:
           php vendor/bin/phpunit tests --bootstrap vendor/autoload.php --coverage-clover ./coverage.xml
       - name: Push to Codecov Probably
         if: ${{ matrix.php-versions == '8.5' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         with:
           files: ./coverage.xml
           verbose: true
