@@ -10,24 +10,31 @@ use ReflectionAttribute;
 
 class AnnotationDoc {
 
-	public string
-	$Namespace;
+	public ClassDoc
+	$Class;
 
-	public string
-	$Name;
-
-	public object
+	public ?object
 	$Object;
 
 	public function
-	__Construct(ReflectionAttribute $Attribute) {
+	__Construct(string $Class, ?object $Instance=NULL) {
 
-		$Class = new ClassDoc($Attribute->getName());
-		$this->Namespace = $Class->Namespace;
-		$this->Name = $Class->Name;
-		$this->Object = $Attribute->newInstance();
+		$this->Class = new ClassDoc($Class);
+		$this->Object = $Instance;
 
 		return;
+	}
+
+	static public function
+	FromReflection(ReflectionAttribute $Attr):
+	static {
+
+		$Output = new static(
+			$Attr->getName(),
+			$Attr->newInstance()
+		);
+
+		return $Output;
 	}
 
 };

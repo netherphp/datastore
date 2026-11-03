@@ -66,11 +66,11 @@ class ClassMethodDoc {
 		$Return = $Info->getReturnType();
 
 		$Annos->Remap(function(ReflectionAttribute $Attrib) {
-			return new AnnotationDoc($Attrib);
+			return AnnotationDoc::FromReflection($Attrib);
 		});
 
 		$Params->Remap(function(ReflectionParameter $Arg) {
-			return new FunctionArgDoc($Arg);
+			return FunctionArgDoc::FromReflection($Arg);
 		});
 
 		$this->Namespace = $Class->getNamespaceName();

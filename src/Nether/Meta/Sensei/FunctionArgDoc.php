@@ -17,18 +17,28 @@ class FunctionArgDoc {
 	$Type;
 
 	public function
-	__Construct(ReflectionParameter $Arg) {
+	__Construct(string $Name, string $Type='mixed') {
 
-		$this->Name = $Arg->getName();
-
-		$Type = $Arg->getType();
-		
-		if($Type === NULL)
-		$this->Type = 'mixed';
-		else
-		$this->Type = (string)$Type;
+		$this->Name = $Name;
+		$this->Type = $Type;
 
 		return;
+	}
+
+	static public function
+	FromReflection(ReflectionParameter $Ref):
+	static {
+
+		$RefType = $Ref->getType();
+		$StrName = $Ref->getName();
+		$StrType = 'mixed';
+
+		if($RefType)
+		$Type = (string)$RefType;
+
+		$Output = new static($StrName, $StrType);
+
+		return $Output;
 	}
 
 };

@@ -117,23 +117,30 @@ void {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-$Doc = new ClassDoc(Nether\Datastore::class);
-$Buffer = NULL;
+$Docs = new Nether\Datastore([
+	sprintf('%s/docs/api-datastore.md', AppRoot)
+	=> Nether\Datastore::class
+]);
 
-ob_start();
+$Docs->EachKeyValue(function(string $File, string $Class) {
 
-////////////////////////////////////////////////////////////////////////////////
+	$Doc = new ClassDoc($Class);
+	$Buffer = NULL;
 
-($Doc->Methods)
-->Distill(FilterUserlandMethods(...))
-->SortByValue(SortUserlandMethods(...))
-->Each(PrintMethodDoc(...));
+	ob_start();
+	{
+		($Doc->Methods)
+		->Distill(FilterUserlandMethods(...))
+		->SortByValue(SortUserlandMethods(...))
+		->Each(PrintMethodDoc(...));
+	}
 
-////////////////////////////////////////////////////////////////////////////////
+	$Buffer = ob_get_clean();
+	file_put_contents(Outfile, $Buffer);		
 
-$Buffer = ob_get_clean();
-file_put_contents(Outfile, $Buffer);
+	echo $Buffer;
 
-echo $Buffer;
+	return;
+});
 
 ////////////////////////////////////////////////////////////////////////////////

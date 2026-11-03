@@ -520,6 +520,58 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	MethodIsTrue():
+	void {
+
+		$Store = new Datastore([ 'Yah'=> TRUE, 'Nah'=> FALSE ]);
+
+		$this->assertTrue($Store->IsTrue('Yah'));
+		$this->assertFalse($Store->IsTrue('Nah'));
+
+		// it should be false that undefined keys are true.
+
+		$this->assertFalse($Store->IsTrue('Wut'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodIsFalse():
+	void {
+
+		$Store = new Datastore([ 'Yah'=> TRUE, 'Nah'=> FALSE ]);
+
+		$this->assertFalse($Store->IsFalse('Yah'));
+		$this->assertTrue($Store->IsFalse('Nah'));
+
+		// it should be true that undefined keys are false.
+
+		$this->assertTrue($Store->IsFalse('Wut'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodIsNull():
+	void {
+
+		$Store = new Datastore([ 'Yah'=> TRUE, 'Nah'=> FALSE, 'Meh'=> NULL ]);
+
+		$this->assertTrue($Store->IsNull('Meh'));
+		$this->assertFalse($Store->IsNull('Yah'));
+		$this->assertFalse($Store->IsNull('Nah'));
+
+		// it should be true that undefined keys are null.
+
+		$this->assertTrue($Store->IsNull('Wut'));
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -1353,6 +1405,34 @@ extends TestCase {
 		);
 
 		////////
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodRoll():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		
+		$this->assertEquals(6, $Store->Roll(
+			fn(mixed $V, mixed $C)=> $V + $C
+		));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodRollKeyValue():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+
+		$this->assertEquals(6, $Store->RollKeyValue(
+			fn(mixed $K, mixed $V, mixed $C)=> $V + $C
+		));
 
 		return;
 	}

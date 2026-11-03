@@ -13,3 +13,15 @@ Provides a data collection object that is a redux of the Nether\Common\Datastore
 # TODO
 
 * Move Nether\Meta namespace to `netherphp/meta` once base annotations are re-established.
+
+* Move Nether\Filters namespace to `netherphp/filter` once base filters are re-implemented.
+
+* Dependencies: Nether\Datastore
+	- netherphp/filter
+	- netherphp/meta
+
+* Dependencies: Nether\Filters
+	- netherphp/meta
+
+* Dependencies: Nether\Meta
+	- none

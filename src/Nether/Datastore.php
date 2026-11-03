@@ -9,6 +9,7 @@ use Countable;
 use Exception;
 
 use Nether\Meta\Code;
+use Nether\Filter;
 
 ################################################################################
 ################################################################################
@@ -215,6 +216,39 @@ implements
 	bool {
 
 		return ($this->GetLastKey() === $Key);
+	}
+
+	////////////////////////////////////////////////////////////////
+
+	public function
+	IsTrue(int|string $Key, bool $Undefined=FALSE):
+	bool {
+
+		$Result = Filter\Type::Bool($this->Get(
+			$Key, $Undefined
+		));
+
+		return ($Result === TRUE);
+	}
+
+	public function
+	IsFalse(int|string $Key, bool $Undefined=FALSE):
+	bool {
+
+		$Result = Filter\Type::Bool($this->Get(
+			$Key, $Undefined
+		));
+
+		return ($Result === FALSE);
+	}
+
+	public function
+	IsNull(int|string $Key):
+	bool {
+
+		$Result = $this->Get($Key, NULL);
+
+		return ($Result === NULL);
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -457,7 +491,7 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Append input to end of dataset overwriting existing keys.')]
-	#[Code\Todo('2026-11-02')]
+	#[Code\Added('2026-11-02')]
 	public function
 	Merge(iterable $Input):
 	static {
@@ -476,7 +510,7 @@ implements
 	}
 
 	#[Code\Info('Prepend input to start of dataset overwriting existing keys.')]
-	#[Code\Todo('2026-11-02')]
+	#[Code\Added('2026-11-02')]
 	public function
 	MergeStart(iterable $Input):
 	static {
@@ -513,7 +547,7 @@ implements
 	}
 
 	#[Code\Info('Append input to end of dataset without overwriting existing keys.')]
-	#[Code\Todo('2026-11-01')]
+	#[Code\Added('2026-11-01')]
 	public function
 	Blend(iterable $Input):
 	static {
@@ -540,7 +574,7 @@ implements
 	}
 
 	#[Code\Info('Prepend input to start of dataset without overwriting existing keys.')]
-	#[Code\Todo('2026-11-01')]
+	#[Code\Added('2026-11-01')]
 	public function
 	BlendStart(iterable $Input):
 	static {
@@ -575,6 +609,39 @@ implements
 	}
 
 	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Accumulate value by iterating over each item with the specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Value, mixed $Carry)')]
+	#[Code\Added('2026-11-03')]
+	public function
+	Roll(callable $Func, mixed $Initial=0):
+	mixed {
+	
+		$Accum = $Initial;
+		$Val = NULL;
+
+		foreach($this->Dataset as $Val) 
+		$Accum = $Func($Val, $Accum);
+
+		return $Accum;
+	}
+
+	#[Code\Info('Accumulate value by iterating over each item with the specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value, mixed $Carry)')]
+	#[Code\Added('2026-11-03')]
+	public function
+	RollKeyValue(callable $Func, mixed $Initial=0):
+	mixed {
+	
+		$Accum = $Initial;
+		$Key = NULL;
+		$Val = NULL;
+
+		foreach($this->Dataset as $Key => $Val) 
+		$Accum = $Func($Key, $Val, $Accum);
+
+		return $Accum;
+	}
 
 	#[Code\Info('Join together as a string using specified delimiter.')]
 	#[Code\Added('2026-11-01')]
