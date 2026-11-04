@@ -1587,6 +1587,23 @@ extends TestCase {
 
 		////////
 
+		$Store->RemoveProtectedKey(1);
+
+		$this->assertSame(1, preg_match(
+			'/\[1\] => two/ms',
+			$Run($Store)
+		));
+
+		////////
+
+		$Store->AddProtectedKey(1);
+		$Store->ClearProtectedKeys();
+
+		$this->assertSame(1, preg_match(
+			'/\[1\] => two/ms',
+			$Run($Store)
+		));
+
 		return;
 	}
 
