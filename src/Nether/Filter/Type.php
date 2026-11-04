@@ -54,10 +54,17 @@ class Type {
 		if(is_bool($Item))
 		return $Item;
 
-		if(is_string($Item) && (strlen($Item) <= 4))
-		$Item = strtoupper(trim($Item));
+		////////
 
-		return match($Item) {
+		$Normal = match(TRUE) {
+			is_string($Item)
+			=> strtoupper(substr(trim($Item), 0, 5)),
+
+			default
+			=> $Item
+		};
+
+		$Output = match($Normal) {
 
 			// specific truies.
 			1, '1', 'T', 'TRUE', 'Y', 'YES'
@@ -72,6 +79,10 @@ class Type {
 			=> FALSE
 
 		};
+
+		////////
+
+		return $Output;
 	}
 
 	#[Code\Info('Return a boolean for input that seems boolean, with nullable conditions.')]

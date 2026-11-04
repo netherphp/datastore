@@ -25,6 +25,8 @@ extends TestCase {
 
 		$this->assertFalse(Filter\Type::Bool(FALSE));
 		$this->assertFalse(Filter\Type::Bool(0));
+		$this->assertFalse(Filter\Type::Bool(0.0));
+		$this->assertFalse(Filter\Type::Bool(1.0));
 		$this->assertFalse(Filter\Type::Bool('0'));
 		$this->assertFalse(Filter\Type::Bool('N'));
 		$this->assertFalse(Filter\Type::Bool('NO'));
