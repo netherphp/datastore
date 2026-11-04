@@ -25,6 +25,11 @@ implements
 	protected array
 	$Dataset;
 
+	#[Code\Info('List of keys to omit during debug dumps.')]
+	#[Code\Added('2026-11-03')]
+	protected array
+	$ProtectedKeys = [];
+
 	################################################################
 	################################################################
 
@@ -35,6 +40,38 @@ implements
 		$this->Import($Input);
 
 		return;
+	}
+
+	#[Code\Added('2026-11-03')]
+	public function
+	__DebugInfo():
+	array {
+
+		$Key = NULL;
+		$Val = NULL;
+		$Output = [];
+		$Data = [];
+
+		////////
+
+		foreach($this->Dataset as $Key => $Val) {
+			if(array_key_exists($Key, $this->ProtectedKeys)) {
+				if($this->ProtectedKeys[$Key] === FALSE)
+				continue;
+			
+				$Data[$Key] = sprintf('[protected %s]', gettype($Val));
+				continue;
+			}
+
+			$Data[$Key] = $Val;
+			continue;
+		}
+
+		////////
+
+		$Output['Dataset'] = $Data;
+
+		return $Output;
 	}
 
 	################################################################
@@ -177,6 +214,37 @@ implements
 		);
 
 		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	public function
+	AddProtectedKey(int|string $Key, bool $Strip=FALSE):
+	static {
+
+		$this->ProtectedKeys[$Key] = !$Strip;
+
+		return $this;
+	}
+
+	public function
+	RemoveProtectedKey(int|string $Key):
+	static {
+
+		unset($this->ProtectedKeys[$Key]);
+		
+		return $this;
+	}
+
+	public function
+	ClearProtectedKeys():
+	static {
+
+		unset($this->ProtectedKeys);
+		$this->ProtectedKeys = [];
+
+		return $this;
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -610,39 +678,6 @@ implements
 
 	////////////////////////////////////////////////////////////////
 
-	#[Code\Info('Accumulate value by iterating over each item with the specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Value, mixed $Carry)')]
-	#[Code\Added('2026-11-03')]
-	public function
-	Roll(callable $Func, mixed $Initial=0):
-	mixed {
-	
-		$Accum = $Initial;
-		$Val = NULL;
-
-		foreach($this->Dataset as $Val) 
-		$Accum = $Func($Val, $Accum);
-
-		return $Accum;
-	}
-
-	#[Code\Info('Accumulate value by iterating over each item with the specified callable.')]
-	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value, mixed $Carry)')]
-	#[Code\Added('2026-11-03')]
-	public function
-	RollKeyValue(callable $Func, mixed $Initial=0):
-	mixed {
-	
-		$Accum = $Initial;
-		$Key = NULL;
-		$Val = NULL;
-
-		foreach($this->Dataset as $Key => $Val) 
-		$Accum = $Func($Key, $Val, $Accum);
-
-		return $Accum;
-	}
-
 	#[Code\Info('Join together as a string using specified delimiter.')]
 	#[Code\Added('2026-11-01')]
 	public function
@@ -888,6 +923,41 @@ implements
 		////////
 
 		return $this;
+	}
+
+	////////////////////////////////////////////////////////////////
+
+	#[Code\Info('Accumulate value by iterating over each item with the specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Value, mixed $Carry)')]
+	#[Code\Added('2026-11-03')]
+	public function
+	Roll(callable $Func, mixed $Initial=0):
+	mixed {
+	
+		$Accum = $Initial;
+		$Val = NULL;
+
+		foreach($this->Dataset as $Val) 
+		$Accum = $Func($Val, $Accum);
+
+		return $Accum;
+	}
+
+	#[Code\Info('Accumulate value by iterating over each item with the specified callable.')]
+	#[Code\Arg('Func', 'fn(mixed $Key, mixed $Value, mixed $Carry)')]
+	#[Code\Added('2026-11-03')]
+	public function
+	RollKeyValue(callable $Func, mixed $Initial=0):
+	mixed {
+	
+		$Accum = $Initial;
+		$Key = NULL;
+		$Val = NULL;
+
+		foreach($this->Dataset as $Key => $Val) 
+		$Accum = $Func($Key, $Val, $Accum);
+
+		return $Accum;
 	}
 
 	////////////////////////////////////////////////////////////////

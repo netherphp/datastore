@@ -1442,6 +1442,93 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MagicDebugInfo_PrintR():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+
+		$Run = function(Datastore $Data) {
+			ob_start();
+			print_r($Data);
+			return ob_get_clean();
+		};
+		
+		////////
+
+		$this->assertSame(1, preg_match(
+			'/\[1\] => two/ms',
+			$Run($Store)
+		));
+
+		////////
+
+		$Store->AddProtectedKey(1);
+
+		$this->assertSame(1, preg_match(
+			'/\[1\] => \[protected string\]/ms',
+			$Run($Store)
+		));
+
+		////////
+
+		$Store->AddProtectedKey(1, TRUE);
+
+		$this->assertSame(0, preg_match(
+			'/\[1\] => /ms',
+			$Run($Store)
+		));
+
+		////////
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MagicDebugInfo_VarDump():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleList);
+
+		$Run = function(Datastore $Data) {
+			ob_start();
+			var_dump($Data);
+			return ob_get_clean();
+		};
+		
+		////////
+
+		$this->assertSame(1, preg_match(
+			'/\[1\]=>(?:[\r\n\s\h]+)string\(3\) "two"/ms',
+			$Run($Store)
+		));
+
+		////////
+
+		$Store->AddProtectedKey(1);
+
+		$this->assertSame(1, preg_match(
+			'/\[1\]=>(?:[\r\n\s\h]+)string\(18\) "\[protected string\]"/ms',
+			$Run($Store)
+		));
+
+		////////
+
+		$Store->AddProtectedKey(1, TRUE);
+
+		$this->assertSame(0, preg_match(
+			'/\[1\]=>/ms',
+			$Run($Store)
+		));
+
+		////////
+
+		return;
+	}
+
+
+	#[Test]
+	public function
 	InterfaceArrayAccess():
 	void {
 
