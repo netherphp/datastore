@@ -10,6 +10,41 @@ use Nether\Meta\Code;
 
 class Type {
 
+	#[Code\Info('Check if a value seems nullable. (NULL, "NULL", and "")')]
+	#[Code\Added('2026-11-03')]
+	static public function
+	IsNullable(mixed $Item):
+	bool {
+
+		if(is_null($Item))
+		return TRUE;
+
+		////////
+
+		$Normal = match(TRUE) {
+			is_string($Item)
+			=> strtoupper(substr(trim($Item), 0, 4)),
+
+			default
+			=> $Item
+		};
+
+		$Output = match($Normal) {
+			'NULL', '',
+			=> TRUE,
+
+			default
+			=> FALSE
+		};
+
+		////////
+
+		return $Output;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Code\Info('Return a boolean for input that seems boolean.')]
 	#[Code\Added('2026-11-03')]
 	static public function
@@ -23,11 +58,19 @@ class Type {
 		$Item = strtoupper(trim($Item));
 
 		return match($Item) {
+
+			// specific truies.
 			1, '1', 'T', 'TRUE', 'Y', 'YES'
 			=> TRUE,
 
+			// specific falsies.
+			0, '0', 'F', 'FALSE', 'N', 'NO'
+			=> FALSE,
+
+			// anything undefined is also false.
 			default
 			=> FALSE
+
 		};
 	}
 
@@ -37,25 +80,10 @@ class Type {
 	BoolNullable(mixed $Item):
 	?bool {
 
-		if($Item === NULL)
+		if(static::IsNullable($Item))
 		return NULL;
 
-		if(is_bool($Item))
-		return $Item;
-
-		if(is_string($Item))
-		$Item = strtoupper(trim($Item));
-
-		return match($Item) {
-			1, '1', 'T', 'TRUE', 'Y', 'YES'
-			=> TRUE,
-
-			'NULL', '',
-			=> NULL,
-
-			default
-			=> FALSE
-		};
+		return static::Bool($Item);
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -82,19 +110,10 @@ class Type {
 	IntNullable(mixed $Item):
 	?int {
 
-		if($Item === NULL)
+		if(static::IsNullable($Item))
 		return NULL;
 
-		if(is_string($Item))
-		$Item = strtoupper(trim($Item));
-
-		return match($Item) {
-			'NULL', '',
-			=> NULL,
-
-			default
-			=> static::Int($Item)
-		};
+		return static::Int($Item);
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -121,19 +140,10 @@ class Type {
 	FloatNullable(mixed $Item):
 	?float {
 
-		if($Item === NULL)
+		if(static::IsNullable($Item))
 		return NULL;
 
-		if(is_string($Item))
-		$Item = strtoupper(trim($Item));
-
-		return match($Item) {
-			'NULL', '',
-			=> NULL,
-
-			default
-			=> static::Float($Item)
-		};
+		return static::Float($Item);
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -167,26 +177,10 @@ class Type {
 	StringNullable(mixed $Item):
 	?string {
 
-		if($Item === NULL)
+		if(static::IsNullable($Item))
 		return NULL;
 
-		////////
-
-		$Norm = match(TRUE) {
-			is_string($Item)
-			=> strtoupper(substr(trim($Item), 0, 4)),
-
-			default
-			=> $Item
-		};
-
-		return match($Norm) {
-			'NULL', '',
-			=> NULL,
-
-			default
-			=> static::String($Item)
-		};
+		return static::String($Item);
 	}
 
 };
