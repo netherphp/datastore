@@ -1518,6 +1518,29 @@ extends TestCase {
 
 	#[Test]
 	public function
+	MethodReindexKeyValue_Practical_SnakeToPascal():
+	void {
+
+		$Store = new Datastore([
+			'id' => 1,
+			'user_name' => 'bob',
+		]);
+
+		$Store->ReindexKeyValue(
+			fn(string $Key, mixed $Val)
+			=> str_replace(' ', '', ucwords(str_replace('_', ' ', $Key)))
+		);
+
+		$this->assertFalse($Store->Has('id'));
+		$this->assertFalse($Store->Has('user_name'));
+		$this->assertTrue($Store->Has('Id'));
+		$this->assertTrue($Store->Has('UserName'));
+
+		return;
+	}
+
+	#[Test]
+	public function
 	MethodRoll():
 	void {
 

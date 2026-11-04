@@ -56,6 +56,14 @@ Get entire dataset as an array.
 $Raw = $Data->Export();
 ```
 
+### `->Copy(void): int`
+
+Perform a shallow copy of the dataset.
+
+```php
+$Copy = $Data->Copy();
+```
+
 --------------------------------------------------------------------------------
 
 ### `->Count(void): int`
@@ -296,6 +304,28 @@ if($Users->IsList())
 echo 'it is a list (non-associative-array).', PHP_EOL;
 ```
 
+### `->IsFirstKey(string $Key): bool`
+### `->IsLastKey(string $Key): bool`
+### `->GetFirstKey(): int|string`
+### `->GetLastKey(): int|string`
+### `->GetFirstValue(): mixed`
+### `->GetLastValue(): mixed`
+
+### `->Join(string $Delimiter): string`
+
+Join the dataset together using the specified delimiter.
+
+```php
+$Row = $Data->Join(',');
+```
+
+### `->Shuffle(void): int`
+
+Perform an in-place shuffle of the dataset.
+
+```php
+$Data->Shuffle();
+```
 
 
 ## Value Util API
