@@ -1650,7 +1650,6 @@ extends TestCase {
 		return;
 	}
 
-
 	#[Test]
 	public function
 	InterfaceArrayAccess():
