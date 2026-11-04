@@ -15,15 +15,11 @@ extends TestCase {
 	TypeBool():
 	void {
 
-		$this->assertFalse(Filter\Type::Bool(NULL));
-		$this->assertFalse(Filter\Type::Bool('null'));
-		$this->assertFalse(Filter\Type::Bool('Null'));
-		$this->assertFalse(Filter\Type::Bool('NULL'));
-
 		$this->assertTrue(Filter\Type::Bool(TRUE));
 		$this->assertTrue(Filter\Type::Bool(1));
 		$this->assertTrue(Filter\Type::Bool('1'));
 		$this->assertTrue(Filter\Type::Bool('Y'));
+		$this->assertTrue(Filter\Type::Bool('YES'));
 		$this->assertTrue(Filter\Type::Bool('T'));
 		$this->assertTrue(Filter\Type::Bool('TRUE'));
 
@@ -31,9 +27,15 @@ extends TestCase {
 		$this->assertFalse(Filter\Type::Bool(0));
 		$this->assertFalse(Filter\Type::Bool('0'));
 		$this->assertFalse(Filter\Type::Bool('N'));
+		$this->assertFalse(Filter\Type::Bool('NO'));
 		$this->assertFalse(Filter\Type::Bool('F'));
 		$this->assertFalse(Filter\Type::Bool('FALSE'));
 
+		$this->assertFalse(Filter\Type::Bool(NULL));
+		$this->assertFalse(Filter\Type::Bool('null'));
+		$this->assertFalse(Filter\Type::Bool('Null'));
+		$this->assertFalse(Filter\Type::Bool('NULL'));
+		$this->assertFalse(Filter\Type::Bool(''));
 		$this->assertFalse(Filter\Type::Bool('asdf'));
 		$this->assertFalse(Filter\Type::Bool([]));
 		$this->assertFalse(Filter\Type::Bool(new stdClass));

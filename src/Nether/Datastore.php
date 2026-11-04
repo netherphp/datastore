@@ -289,23 +289,37 @@ implements
 	////////////////////////////////////////////////////////////////
 
 	public function
-	IsTrue(int|string $Key, bool $Undefined=FALSE):
+	IsTrue(int|string $Key):
 	bool {
 
-		$Result = Filter\Type::Bool($this->Get(
-			$Key, $Undefined
-		));
+		$Result = $this->Get($Key);
 
 		return ($Result === TRUE);
 	}
 
 	public function
-	IsFalse(int|string $Key, bool $Undefined=FALSE):
+	IsTrueEnough(int|string $Key):
 	bool {
 
-		$Result = Filter\Type::Bool($this->Get(
-			$Key, $Undefined
-		));
+		$Result = Filter\Type::Bool($this->Get($Key));
+
+		return ($Result === TRUE);
+	}
+
+	public function
+	IsFalse(int|string $Key):
+	bool {
+
+		$Result = $this->Get($Key, FALSE);
+
+		return ($Result === FALSE);
+	}
+
+	public function
+	IsFalseEnough(int|string $Key):
+	bool {
+
+		$Result = Filter\Type::Bool($this->Get($Key));
 
 		return ($Result === FALSE);
 	}
@@ -314,7 +328,25 @@ implements
 	IsNull(int|string $Key):
 	bool {
 
+		$Result = $this->Get($Key);
+
+		return ($Result === NULL);
+	}
+
+	public function
+	IsNullEnough(int|string $Key):
+	bool {
+
 		$Result = $this->Get($Key, NULL);
+
+		if(is_string($Result))
+		$Result = match(strtoupper(trim($Result))) {
+			'NULL', '',
+			=> NULL,
+
+			default
+			=> $Result
+		};
 
 		return ($Result === NULL);
 	}
@@ -346,7 +378,7 @@ implements
 	Get(int|string $Key, mixed $Default=NULL):
 	mixed {
 
-		if(!$this->Has($Key))
+		if(!array_key_exists($Key, $this->Dataset))
 		return $Default;
 
 		return $this->Dataset[$Key];

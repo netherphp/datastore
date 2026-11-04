@@ -95,6 +95,19 @@ extends TestCase {
 	const int
 	DatasetSimpleCount = 3;
 
+	const array
+	DatasetBasicTypes = [
+		'True'  => TRUE,
+		'Yah'   => 'true',
+		
+		'False' => FALSE,
+		'Nah'   => 'false',
+
+		'Null'  => NULL,
+		'Nada'  => '',
+		'Nope'  => 'null'
+	];
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -525,14 +538,41 @@ extends TestCase {
 	MethodIsTrue():
 	void {
 
-		$Store = new Datastore([ 'Yah'=> TRUE, 'Nah'=> FALSE ]);
+		$Store = new Datastore(static::DatasetBasicTypes);
 
-		$this->assertTrue($Store->IsTrue('Yah'));
+		$this->assertTrue($Store->IsTrue('True'));
+		$this->assertFalse($Store->IsTrue('Yah'));
+
+		$this->assertFalse($Store->IsTrue('False'));
 		$this->assertFalse($Store->IsTrue('Nah'));
 
-		// it should be false that undefined keys are true.
+		$this->assertFalse($Store->IsTrue('Null'));
+		$this->assertFalse($Store->IsTrue('Nada'));
+		$this->assertFalse($Store->IsTrue('Nope'));
 
 		$this->assertFalse($Store->IsTrue('Wut'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodIsTrueEnough():
+	void {
+
+		$Store = new Datastore(static::DatasetBasicTypes);
+
+		$this->assertTrue($Store->IsTrueEnough('True'));
+		$this->assertTrue($Store->IsTrueEnough('Yah'));
+
+		$this->assertFalse($Store->IsTrueEnough('False'));
+		$this->assertFalse($Store->IsTrueEnough('Nah'));
+
+		$this->assertFalse($Store->IsTrueEnough('Null'));
+		$this->assertFalse($Store->IsTrueEnough('Nada'));
+		$this->assertFalse($Store->IsTrueEnough('Nope'));
+
+		$this->assertFalse($Store->IsTrueEnough('Wut'));
 
 		return;
 	}
@@ -542,14 +582,41 @@ extends TestCase {
 	MethodIsFalse():
 	void {
 
-		$Store = new Datastore([ 'Yah'=> TRUE, 'Nah'=> FALSE ]);
+		$Store = new Datastore(static::DatasetBasicTypes);
 
+		$this->assertFalse($Store->IsFalse('True'));
 		$this->assertFalse($Store->IsFalse('Yah'));
-		$this->assertTrue($Store->IsFalse('Nah'));
 
-		// it should be true that undefined keys are false.
+		$this->assertTrue($Store->IsFalse('False'));
+		$this->assertFalse($Store->IsFalse('Nah'));
+		
+		$this->assertFalse($Store->IsFalse('Null'));
+		$this->assertFalse($Store->IsFalse('Nada'));
+		$this->assertFalse($Store->IsFalse('Nope'));
 
 		$this->assertTrue($Store->IsFalse('Wut'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodIsFalseEnough():
+	void {
+
+		$Store = new Datastore(static::DatasetBasicTypes);
+
+		$this->assertFalse($Store->IsFalseEnough('True'));
+		$this->assertFalse($Store->IsFalseEnough('Yah'));
+
+		$this->assertTrue($Store->IsFalseEnough('False'));
+		$this->assertTrue($Store->IsFalseEnough('Nah'));
+		
+		$this->assertTrue($Store->IsFalseEnough('Null'));
+		$this->assertTrue($Store->IsFalseEnough('Nada'));
+		$this->assertTrue($Store->IsFalseEnough('Nope'));
+
+		$this->assertTrue($Store->IsFalseEnough('Wut'));
 
 		return;
 	}
@@ -559,15 +626,41 @@ extends TestCase {
 	MethodIsNull():
 	void {
 
-		$Store = new Datastore([ 'Yah'=> TRUE, 'Nah'=> FALSE, 'Meh'=> NULL ]);
+		$Store = new Datastore(static::DatasetBasicTypes);
 
-		$this->assertTrue($Store->IsNull('Meh'));
+		$this->assertFalse($Store->IsNull('True'));
 		$this->assertFalse($Store->IsNull('Yah'));
-		$this->assertFalse($Store->IsNull('Nah'));
 
-		// it should be true that undefined keys are null.
+		$this->assertFalse($Store->IsNull('False'));
+		$this->assertFalse($Store->IsNull('Nah'));
+		
+		$this->assertTrue($Store->IsNull('Null'));
+		$this->assertFalse($Store->IsNull('Nada'));
+		$this->assertFalse($Store->IsNull('Nope'));
 
 		$this->assertTrue($Store->IsNull('Wut'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodIsNullEnough():
+	void {
+
+		$Store = new Datastore(static::DatasetBasicTypes);
+
+		$this->assertFalse($Store->IsNullEnough('True'));
+		$this->assertFalse($Store->IsNullEnough('Yah'));
+
+		$this->assertFalse($Store->IsNullEnough('False'));
+		$this->assertFalse($Store->IsNullEnough('Nah'));
+		
+		$this->assertTrue($Store->IsNullEnough('Null'));
+		$this->assertTrue($Store->IsNullEnough('Nada'));
+		$this->assertTrue($Store->IsNullEnough('Nope'));
+
+		$this->assertTrue($Store->IsNullEnough('Wut'));
 
 		return;
 	}

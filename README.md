@@ -54,7 +54,7 @@ Set value for specified key.
 
 Set value for specified key only if it has not already in this dataset. Otherwise the old value is kept.
 
-### `->Unset(mixed $Key): mixed`
+### `->Unset(mixed $Key): $this`
 
 Remove specified key from dataset.
 
@@ -203,6 +203,58 @@ $Data->SortByValue(
 	=> $A->Username <=> $B->Username
 );
 ```
+
+
+
+# Misc Dataset Util API
+
+### `->IsEmpty(void): bool`
+
+Is this dataset empty?
+
+### `->IsList(void): bool`
+
+Is this dataset a proper numeric indexed list?
+
+
+
+# Misc Value Util API
+
+### `->IsTrue(string $Key): bool`
+
+Test the specified value is boolean TRUE.
+
+### `->IsTrueEnough(string $Key): bool`
+
+Test the specified value as boolean TRUE or a value that seems to true enough. It has strict context of what is allowed to be considered trueish via Filter\Type::Bool() which differs from PHP's more broad behaviour.
+
+- `bool(TRUE)`
+- `int(1)`
+- `string('1', 'T', 'TRUE', 'Y', 'YES') [case-insensitive]`
+
+### `->IsFalse(string $Key): bool`
+
+Test the specified value is boolean FALSE.
+
+### `->IsFalseEnough(string $Key): bool`
+
+Test the specified value as boolean FALSE or a value that seems false enough. It has strict context of what is allowed to be considered falsey via Filter\Type::Bool() which differs from PHP's more broad behaviour.
+
+- `bool(FALSE)`
+- `int(0)`
+- `string('', '0', 'F', 'FALSE', 'N', 'NO') [case-insensitive]`
+
+### `->IsNull(void): bool`
+
+Test the specified value as literal NULL.
+
+### `->IsNullEnough(void): bool`
+
+Test the specified value as literal NULL or null enough.
+
+- `NULL`
+- `int(0)`
+- `string('', 'NULL') [case-insensitive]`
 
 
 
