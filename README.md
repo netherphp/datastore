@@ -206,7 +206,7 @@ $Data->SortByValue(
 
 
 
-# Misc Dataset Util API
+# Dataset Util API
 
 ### `->IsEmpty(void): bool`
 
@@ -218,11 +218,11 @@ Is this dataset a proper numeric indexed list?
 
 
 
-# Misc Value Util API
+# Value Util API
 
 ### `->IsTrue(string $Key): bool`
 
-Test the specified value is boolean TRUE.
+Test the specified value as boolean TRUE.
 
 ### `->IsTrueEnough(string $Key): bool`
 
@@ -234,7 +234,7 @@ Test the specified value as boolean TRUE or a value that seems to true enough. I
 
 ### `->IsFalse(string $Key): bool`
 
-Test the specified value is boolean FALSE.
+Test the specified value as boolean FALSE.
 
 ### `->IsFalseEnough(string $Key): bool`
 
@@ -242,7 +242,9 @@ Test the specified value as boolean FALSE or a value that seems false enough. It
 
 - `bool(FALSE)`
 - `int(0)`
+- `NULL`
 - `string('', '0', 'F', 'FALSE', 'N', 'NO') [case-insensitive]`
+- `string(technically *any* string that fails IsTrueEnough)`
 
 ### `->IsNull(void): bool`
 
@@ -253,7 +255,6 @@ Test the specified value as literal NULL.
 Test the specified value as literal NULL or null enough.
 
 - `NULL`
-- `int(0)`
 - `string('', 'NULL') [case-insensitive]`
 
 

@@ -64,7 +64,7 @@ class Type {
 			=> TRUE,
 
 			// specific falsies.
-			0, '0', 'F', 'FALSE', 'N', 'NO'
+			NULL, 0, '0', 'F', 'FALSE', 'N', 'NO',
 			=> FALSE,
 
 			// anything undefined is also false.

@@ -98,9 +98,11 @@ extends TestCase {
 	const array
 	DatasetBasicTypes = [
 		'True'  => TRUE,
+		'One'   => 1,
 		'Yah'   => 'true',
 		
 		'False' => FALSE,
+		'Zero'  => 0,
 		'Nah'   => 'false',
 
 		'Null'  => NULL,
@@ -541,9 +543,11 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetBasicTypes);
 
 		$this->assertTrue($Store->IsTrue('True'));
+		$this->assertFalse($Store->IsTrue('One'));
 		$this->assertFalse($Store->IsTrue('Yah'));
 
 		$this->assertFalse($Store->IsTrue('False'));
+		$this->assertFalse($Store->IsTrue('Zero'));
 		$this->assertFalse($Store->IsTrue('Nah'));
 
 		$this->assertFalse($Store->IsTrue('Null'));
@@ -563,9 +567,11 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetBasicTypes);
 
 		$this->assertTrue($Store->IsTrueEnough('True'));
+		$this->assertTrue($Store->IsTrueEnough('One'));
 		$this->assertTrue($Store->IsTrueEnough('Yah'));
 
 		$this->assertFalse($Store->IsTrueEnough('False'));
+		$this->assertFalse($Store->IsTrueEnough('Zero'));
 		$this->assertFalse($Store->IsTrueEnough('Nah'));
 
 		$this->assertFalse($Store->IsTrueEnough('Null'));
@@ -585,9 +591,11 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetBasicTypes);
 
 		$this->assertFalse($Store->IsFalse('True'));
+		$this->assertFalse($Store->IsFalse('One'));
 		$this->assertFalse($Store->IsFalse('Yah'));
 
 		$this->assertTrue($Store->IsFalse('False'));
+		$this->assertFalse($Store->IsFalse('Zero'));
 		$this->assertFalse($Store->IsFalse('Nah'));
 		
 		$this->assertFalse($Store->IsFalse('Null'));
@@ -607,9 +615,11 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetBasicTypes);
 
 		$this->assertFalse($Store->IsFalseEnough('True'));
+		$this->assertFalse($Store->IsFalseEnough('One'));
 		$this->assertFalse($Store->IsFalseEnough('Yah'));
 
 		$this->assertTrue($Store->IsFalseEnough('False'));
+		$this->assertTrue($Store->IsFalseEnough('Zero'));
 		$this->assertTrue($Store->IsFalseEnough('Nah'));
 		
 		$this->assertTrue($Store->IsFalseEnough('Null'));
@@ -629,9 +639,11 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetBasicTypes);
 
 		$this->assertFalse($Store->IsNull('True'));
+		$this->assertFalse($Store->IsNull('One'));
 		$this->assertFalse($Store->IsNull('Yah'));
-
+		
 		$this->assertFalse($Store->IsNull('False'));
+		$this->assertFalse($Store->IsNull('Zero'));
 		$this->assertFalse($Store->IsNull('Nah'));
 		
 		$this->assertTrue($Store->IsNull('Null'));
@@ -651,9 +663,11 @@ extends TestCase {
 		$Store = new Datastore(static::DatasetBasicTypes);
 
 		$this->assertFalse($Store->IsNullEnough('True'));
+		$this->assertFalse($Store->IsNullEnough('One'));
 		$this->assertFalse($Store->IsNullEnough('Yah'));
 
 		$this->assertFalse($Store->IsNullEnough('False'));
+		$this->assertFalse($Store->IsNullEnough('Zero'));
 		$this->assertFalse($Store->IsNullEnough('Nah'));
 		
 		$this->assertTrue($Store->IsNullEnough('Null'));

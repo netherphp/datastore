@@ -319,7 +319,7 @@ implements
 	IsFalseEnough(int|string $Key):
 	bool {
 
-		$Result = Filter\Type::Bool($this->Get($Key));
+		$Result = Filter\Type::Bool($this->Get($Key, FALSE));
 
 		return ($Result === FALSE);
 	}
