@@ -8,7 +8,7 @@ Provides a data collection object that is a redux of the Nether\Common\Datastore
 
 
 
-# Documentation
+## Documentation
 
 In addition to the following API, the Datastore class implements the following SPL interfaces:
 
@@ -16,11 +16,9 @@ In addition to the following API, the Datastore class implements the following S
 * Countable
 * Iterator
 
-[API Dump in Github Wiki](https://github.com/netherphp/datastore/wiki/API:-Nether%5CDatastore)
 
 
-
-# File API
+## File API
 
 ### `->Load(string $Filename): $this`
 
@@ -40,7 +38,7 @@ $Data->Write('cache/post-list.json');
 
 
 
-# Basic Data API
+## Basic Data API
 
 ### `->Import(iterable $Values): $this`
 
@@ -58,7 +56,7 @@ Get entire dataset as an array.
 $Raw = $Data->Export();
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->Count(void): int`
 
@@ -110,7 +108,7 @@ Remove specified key from dataset.
 $Data->Unset('Key1');
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->Push(mixed $Value): $this`
 ### `->PushFirst(mixed $Value): $this`
@@ -132,7 +130,7 @@ Pop off and return an item from either end of the dataset.
 $Who = $Users->Pop();
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->Merge(iterable $Values): $this`
 ### `->MergeStart(iterable $Values): $this`
@@ -156,7 +154,7 @@ $Data->Blend([ 'Key4'=> 'Data4', ... ])
 
 
 
-# Data Processing API
+## Data Processing API
 
 ### `->Each(callable fn(mixed $Value)): $this`
 ### `->EachKeyValue(callable fn(mixed $Key, mixed $Value)): $this`
@@ -168,7 +166,7 @@ Iterate the entire dataset running the specified callable. The return value of t
 $Users->Each(fn(User $Who)=> var_dump($Who));
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->Map(callable fn(mixed $Value)): new`
 ### `->MapKeyValue(callable fn(mixed $Key, mixed $Value)): new`
@@ -190,7 +188,7 @@ Modify this dataset as mapped by the specified callable. The return value is wha
 $Users->Remap(fn(User $Who)=> $Who->Email);
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->Distill(callable fn(mixed $Value)): new`
 ### `->DistillKeyValue(callable fn(mixed $Key, mixed $Value)): new`
@@ -212,7 +210,7 @@ Modify this dataset as filtered by the specified callable. Returning TRUE will k
 $Users->Filter(fn(User $Who)=> $Who->HasOptedIn());
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->Roll(callable fn(mixed $Value, mixed $Carry), mixed $Initial=0): mixed`
 ### `->RollKeyValue(callable fn(mixed $Key, mixed $Value, mixed $Carry), mixed $Initial=0): mixed`
@@ -227,7 +225,7 @@ $PointsInEconomy = $Users->Roll(
 );
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->Reindex(void): $this`
 ### `->ReindexKeyValue(callable fn(mixed $Key, mixed $Value)): $this`
@@ -261,7 +259,7 @@ $Data->ReindexKeyValue(
 );
 ```
 
-----
+--------------------------------------------------------------------------------
 
 ### `->SortByKey(callable fn(mixed $A, mixed $B)): $this`
 ### `->SortByValue(callable fn(mixed $A, mixed $B)): $this`
@@ -278,7 +276,7 @@ $Users->SortByValue(
 
 
 
-# Dataset Util API
+## Dataset Util API
 
 ### `->IsEmpty(void): bool`
 
@@ -300,7 +298,7 @@ echo 'it is a list (non-associative-array).', PHP_EOL;
 
 
 
-# Value Util API
+## Value Util API
 
 ### `->IsTrue(string $Key): bool`
 
@@ -371,7 +369,7 @@ echo 'Something is nullish enough to say its null.', PHP_EOL;
 
 
 
-# Protected Keys API
+## Protected Keys API
 
 Protect data from being accidentally dumped by debugging tools such as `var_dump()` and `print_r()`. The true values will still exist in the dataset and can be read normally with the other methods of the Datastore object.
 
@@ -406,7 +404,7 @@ $Data->ClearProtectedKeys('Key1');
 var_dump($Data);
 ```
 
-# TODO
+## TODO
 
 * Move Nether\Meta namespace to `netherphp/meta` once base annotations are re-established.
 
