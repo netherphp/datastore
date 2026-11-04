@@ -10,6 +10,12 @@ Provides a data collection object that is a redux of the Nether\Common\Datastore
 
 # Documentation
 
+In addition to the following API, the Datastore class implements the following SPL interfaces:
+
+* ArrayAccess
+* Countable
+* Iterator
+
 [API Dump in Github Wiki](https://github.com/netherphp/datastore/wiki/API:-Nether%5CDatastore)
 
 
@@ -37,6 +43,10 @@ Set/Overwrite entire dataset with specified data.
 Get entire dataset as an array.
 
 ----
+
+### `->Count(void): int`
+
+Count how many items are in this dataset.
 
 ### `->Has(mixed $Key): bool`
 
