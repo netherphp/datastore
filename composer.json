@@ -4,7 +4,8 @@
 	"type": "library",
 	"license": "BSD-3-Clause",
 	"repositories": [
-		{ "type": "vcs", "url": "git@github.com:netherphp/meta" }
+		{ "type": "vcs", "url": "git@github.com:netherphp/meta" },
+		{ "type": "vcs", "url": "git@github.com:netherphp/filter" }
 	],
 	"autoload": {
 		"psr-0": {
@@ -21,7 +22,8 @@
 	],
 	"require": {
 		"php": "^8.5",
-		"netherphp/meta": "dev-master as 0.0.1"
+		"netherphp/meta": "dev-master as 0.0.1",
+		"netherphp/filter": "dev-master as 0.0.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^13"

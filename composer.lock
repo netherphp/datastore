@@ -4,20 +4,66 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4975ac79a53cc29e796b48ee5168975d",
+    "content-hash": "1a25cdcff40aa81ea069908ae7c82aaa",
     "packages": [
+        {
+            "name": "netherphp/filter",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/netherphp/filter.git",
+                "reference": "638ffc13e6fd6d56592c51dd3e5af57f4fe74fe3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/netherphp/filter/zipball/638ffc13e6fd6d56592c51dd3e5af57f4fe74fe3",
+                "reference": "638ffc13e6fd6d56592c51dd3e5af57f4fe74fe3",
+                "shasum": ""
+            },
+            "require": {
+                "netherphp/meta": "dev-master as 0.0.1",
+                "php": "^8.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^13"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Nether\\": "src/"
+                }
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "bobmagicii",
+                    "email": "bob@pegasusgate.net",
+                    "homepage": "http://pegasusgate.net",
+                    "role": "developer"
+                }
+            ],
+            "description": "Commonly used input/output data filters.",
+            "support": {
+                "source": "https://github.com/netherphp/filter/tree/master",
+                "issues": "https://github.com/netherphp/filter/issues"
+            },
+            "time": "2026-11-04T21:04:18+00:00"
+        },
         {
             "name": "netherphp/meta",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/meta.git",
-                "reference": "a5ca56a7cd19b9e800efc3e0225b631f006c748f"
+                "reference": "5c8c87a8b45462bc5566cf5237ddae50b2849b0a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/meta/zipball/a5ca56a7cd19b9e800efc3e0225b631f006c748f",
-                "reference": "a5ca56a7cd19b9e800efc3e0225b631f006c748f",
+                "url": "https://api.github.com/repos/netherphp/meta/zipball/5c8c87a8b45462bc5566cf5237ddae50b2849b0a",
+                "reference": "5c8c87a8b45462bc5566cf5237ddae50b2849b0a",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +95,7 @@
                 "source": "https://github.com/netherphp/meta/tree/master",
                 "issues": "https://github.com/netherphp/meta/issues"
             },
-            "time": "2026-11-04T20:50:21+00:00"
+            "time": "2026-11-04T20:56:15+00:00"
         }
     ],
     "packages-dev": [
@@ -1923,6 +1969,12 @@
     ],
     "aliases": [
         {
+            "package": "netherphp/filter",
+            "version": "9999999-dev",
+            "alias": "0.0.1",
+            "alias_normalized": "0.0.1.0"
+        },
+        {
             "package": "netherphp/meta",
             "version": "9999999-dev",
             "alias": "0.0.1",
@@ -1931,6 +1983,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "netherphp/filter": 20,
         "netherphp/meta": 20
     },
     "prefer-stable": false,
