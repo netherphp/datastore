@@ -1572,6 +1572,35 @@ extends TestCase {
 
 	#[Test]
 	public function
+	DatasetFilterPackage():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertSame(2, $Store->Get('two'));
+
+		// set a single callable filter.
+
+		$Store->SetFilter('two', Nether\Filter\Type::Float(...));
+		$this->assertSame(2.0, $Store->Get('two'));
+
+		// set a chain of callable filters.
+
+		$Store->SetFilter('two', [
+			Nether\Filter\Type::Float(...),
+			Nether\Filter\Type::String(...),
+			Nether\Filter\Type::Int(...)
+		]);
+
+		$this->assertSame(2, $Store->Get('two'));
+
+		return;
+	}
+
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
+	#[Test]
+	public function
 	MagicDebugInfo_PrintR():
 	void {
 

@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/netherphp/filter.git",
-                "reference": "638ffc13e6fd6d56592c51dd3e5af57f4fe74fe3"
+                "reference": "5b5c79bae92dc15b0f631214e24065a1587e1d71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/netherphp/filter/zipball/638ffc13e6fd6d56592c51dd3e5af57f4fe74fe3",
-                "reference": "638ffc13e6fd6d56592c51dd3e5af57f4fe74fe3",
+                "url": "https://api.github.com/repos/netherphp/filter/zipball/5b5c79bae92dc15b0f631214e24065a1587e1d71",
+                "reference": "5b5c79bae92dc15b0f631214e24065a1587e1d71",
                 "shasum": ""
             },
             "require": {
@@ -50,7 +50,7 @@
                 "source": "https://github.com/netherphp/filter/tree/master",
                 "issues": "https://github.com/netherphp/filter/issues"
             },
-            "time": "2026-11-04T21:04:18+00:00"
+            "time": "2026-11-04T21:24:50+00:00"
         },
         {
             "name": "netherphp/meta",
