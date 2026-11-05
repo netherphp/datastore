@@ -4,6 +4,7 @@
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
 use Nether\Datastore;
+use Nether\Filter;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -749,6 +750,21 @@ extends TestCase {
 		$this->assertNull($Store->Get('zero'));
 		$this->assertFalse($Store->Get('zero', FALSE));
 	
+		return;
+	}
+
+	#[Test]
+	public function
+	MethodPick():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$List = $Store->Pick('one', 'three');
+	
+		$this->assertCount(2, $List);
+		$this->assertSame(1, $List['one']);
+		$this->assertSame(3, $List['three']);
+
 		return;
 	}
 
@@ -1616,26 +1632,101 @@ extends TestCase {
 
 	#[Test]
 	public function
-	DatasetFilterPackage():
+	DatasetValueFilter():
 	void {
 
-		$Store = new Datastore(static::DatasetSimpleMap);
-		$this->assertSame(2, $Store->Get('two'));
+		$Store = new Datastore;
 
-		// set a single callable filter.
+		// test we stored an int.
 
-		$Store->SetFilter('two', Nether\Filter\Type::Float(...));
-		$this->assertSame(2.0, $Store->Get('two'));
+		$Store->Set('One', 1);
+		$Store->Set('Zero', 0);
+		$this->assertSame(0, $Store->Get('Zero'));
+		$this->assertSame(1, $Store->Get('One'));
 
-		// set a chain of callable filters.
+		// test we filter it into a float.
 
-		$Store->SetFilter('two', [
-			Nether\Filter\Type::Float(...),
-			Nether\Filter\Type::String(...),
-			Nether\Filter\Type::Int(...)
-		]);
+		$Store->SetValueFilter('One', fn(int $Val)=> (float)$Val);
+		$this->assertSame(0, $Store->Get('Zero'));
+		$this->assertSame(1.0, $Store->Get('One'));
 
-		$this->assertSame(2, $Store->Get('two'));
+		// test it was still stored as its original int.
+
+		$Store->UnsetValueFilter('One');
+		$this->assertSame(0, $Store->Get('Zero'));
+		$this->assertSame(1, $Store ->Get('One'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	DatasetImportFilter():
+	void {
+
+		$Store = new Datastore;
+
+		// test we stored an int.
+
+		$Store->Set('Zero', 0);
+		$Store->Set('One', 1);
+		$this->assertSame(0, $Store->Get('Zero'));
+		$this->assertSame(1, $Store->Get('One'));
+
+		// test that nothing has happened after adding filter.
+
+		$Store->SetImportFilter('One', fn(mixed $Input)=> (float)$Input);
+		$this->assertSame(0, $Store->Get('Zero'));
+		$this->assertSame(1, $Store->Get('One'));
+
+		// test transforming set data.
+
+		$Store->Set('Zero', 0);
+		$Store->Set('One', 1);
+		$this->assertSame(0, $Store->Get('Zero'));
+		$this->assertSame(1.0, $Store ->Get('One'));
+
+		// test the data remained altered.
+
+		$Store->UnsetImportFilter('One');
+		$this->assertSame(0, $Store->Get('Zero'));
+		$this->assertSame(1.0, $Store ->Get('One'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	DatasetImportFilterOnMerge():
+	void {
+
+		$Store = new Datastore([ 'One'=> 1, 'Three' => 3 ]);
+		$Store->SetImportFilter('Zero', fn(mixed $Input)=> (float)$Input);
+		$Store->SetImportFilter('One', fn(mixed $Input)=> (float)$Input);
+		$Store->SetImportFilter('Two', fn(mixed $Input)=> (float)$Input);
+
+		$Store->Merge([ 'One'=> -1, 'Two'=> 2 ]);
+		$this->assertSame(-1.0, $Store->Get('One'));
+		$this->assertSame(2.0, $Store->Get('Two'));
+		$this->assertSame(3, $Store->Get('Three'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	DatasetImportFilterOnBlend():
+	void {
+
+		$Store = new Datastore([ 'One'=> 1, 'Three' => 3 ]);
+		$Store->SetImportFilter('Zero', fn(mixed $Input)=> (float)$Input);
+		$Store->SetImportFilter('One', fn(mixed $Input)=> (float)$Input);
+		$Store->SetImportFilter('Two', fn(mixed $Input)=> (float)$Input);
+
+		$Store->Blend([ 'One'=> -1, 'Two'=> 2 ]);
+		$this->assertSame(1, $Store->Get('One'));
+		$this->assertSame(2.0, $Store->Get('Two'));
+		$this->assertSame(3, $Store->Get('Three'));
 
 		return;
 	}

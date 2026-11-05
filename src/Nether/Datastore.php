@@ -39,7 +39,30 @@ implements
 	public function
 	__Construct(iterable $Input=[]) {
 
+		$this->OnPrepare();
 		$this->Import($Input);
+		$this->OnReady();
+
+		return;
+	}
+
+	################################################################
+	################################################################
+
+	#[Code\Info('To be overwritten by extending classes to allow things before import.')]
+	#[Code\Added('2026-11-05')]
+	public function
+	OnPrepare():
+	void {
+
+		return;
+	}
+
+	#[Code\Info('To be overwritten by extending classes to allow things after import.')]
+	#[Code\Added('2026-11-05')]
+	public function
+	OnReady():
+	void {
 
 		return;
 	}
@@ -53,7 +76,7 @@ implements
 	Import(iterable $Input):
 	static {
 
-		$this->Dataset = match(TRUE) {
+		$Data = match(TRUE) {
 			(!is_array($Input))
 			=> iterator_to_array($Input),
 
@@ -61,7 +84,9 @@ implements
 			=> $Input
 		};
 
-		reset($this->Dataset);
+		$this->ImposeImportFiltersOn($Data);
+
+		$this->Dataset = $Data;
 
 		return $this;
 	}
@@ -320,7 +345,22 @@ implements
 		if(!array_key_exists($Key, $this->Dataset))
 		return $Default;
 
-		return $this->RunFilter($Key, $this->Dataset[$Key]);
+		return $this->RunValueFilter($Key, $this->Dataset[$Key]);
+	}
+
+	#[Code\Info('Return a list of key values.')]
+	#[Code\Added('2026-11-05')]
+	public function
+	Pick(int|string ...$Keys):
+	static {
+
+		$Output = [];
+
+		foreach($Keys as $Key) {
+			$Output[$Key] = $this->Get($Key);
+		}
+
+		return new static($Output);
 	}
 
 	#[Code\Info('Set a key-value only if the key does not already exist.')]
@@ -341,7 +381,9 @@ implements
 	Set(int|string $Key, mixed $Value):
 	static {
 
-		$this->Dataset[$Key] = $Value;
+		$this->Dataset[$Key] = $this->RunImportFilter(
+			$Key, $Value
+		);
 
 		return $this;
 	}
@@ -473,6 +515,9 @@ implements
 		return array_shift($this->Dataset);
 	}
 
+	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
+
 	#[Code\Info('Return a list of the keys in this dataset.')]
 	#[Code\Added('2026-11-01')]
 	public function
@@ -528,6 +573,7 @@ implements
 	}
 
 	////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Append input to end of dataset overwriting existing keys.')]
 	#[Code\Added('2026-11-02')]
@@ -539,6 +585,8 @@ implements
 		$Input = iterator_to_array($Input);
 
 		////////
+
+		$this->ImposeImportFiltersOn($Input);
 
 		$this->Dataset = array_merge(
 			$this->Dataset,
@@ -564,6 +612,8 @@ implements
 		$Input = iterator_to_array($Input);
 
 		////////
+
+		$this->ImposeImportFiltersOn($Input);
 
 		foreach($Input as $Key => $Val) {
 			if(!$this->Has($Key)) {
@@ -599,6 +649,8 @@ implements
 		if(!is_array($Input))
 		$Input = iterator_to_array($Input);
 
+		$this->ImposeImportFiltersOn($Input);
+
 		////////
 
 		foreach($Input as $Key => $Val) {
@@ -626,6 +678,8 @@ implements
 
 		if(!is_array($Input))
 		$Input = iterator_to_array($Input);
+
+		$this->ImposeImportFiltersOn($Input);
 
 		////////
 
