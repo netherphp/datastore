@@ -658,7 +658,8 @@ implements
 		return implode($Delim, $this->Dataset);
 	}
 
-	////////////////////////////////////////////////////////////////
+	################################################################
+	## Data Processing API #########################################
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Info('Run specified callable for every item in this dataset.')]
@@ -931,10 +932,8 @@ implements
 		return $Accum;
 	}
 
-	////////////////////////////////////////////////////////////////
 	################################################################
 	## Factory API #################################################
-	################################################################
 	////////////////////////////////////////////////////////////////
 
 	#[Code\Added('2026-10-26')]
@@ -967,14 +966,58 @@ implements
 		return $Store;
 	}
 
-	////////////////////////////////////////////////////////////////
-	################################################################
-	## PHP Standard Library Interfaces #############################
-	################################################################
-	////////////////////////////////////////////////////////////////
+	#[Code\Added('2026-11-05')]
+	#[Code\Info('Factory to create datastore merging stacks.')]
+	static public function
+	FromStackBlend(iterable $Input, array ...$MoreIterables):
+	static {
+
+		$Output = new Datastore($Input);
+		$Iterable = NULL;
+
+		////////
+
+		foreach($MoreIterables as $Iterable) {
+			if(is_iterable($Iterable))
+			$Output->Blend($Iterable);
+
+			continue;
+		}
+
+		////////
+
+		return $Output;
+	}
+
+	#[Code\Added('2026-11-05')]
+	#[Code\Info('Factory to create datastore merging stacks.')]
+	static public function
+	FromStackMerge(iterable $Input, array ...$MoreIterables):
+	static {
+
+		$Output = new Datastore($Input);
+		$Iterable = NULL;
+
+		////////
+
+		foreach($MoreIterables as $Iterable) {
+			if(is_iterable($Iterable))
+			$Output->Merge($Iterable);
+
+			continue;
+		}
+
+		////////
+
+		return $Output;
+	}
 
 	################################################################
-	## interface: ArrayAccess ######################################
+	## PHP Standard Library Interfaces #############################
+	////////////////////////////////////////////////////////////////
+
+	////////////////////////////////////////////////////////////////
+	// interface: ArrayAccess //////////////////////////////////////
 
 	#[Code\Internal]
 	#[Code\Added('2026-10-28')]
@@ -1014,8 +1057,8 @@ implements
 		return;
 	}
 
-	################################################################
-	## interface: Iterator #########################################
+	////////////////////////////////////////////////////////////////
+	// interface: Iterator /////////////////////////////////////////
 
 	#[Code\Internal]
 	#[Code\Added('2026-10-28')]

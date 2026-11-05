@@ -202,6 +202,50 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	FromBlendFactory():
+	void {
+
+		$Stack = Datastore::FromStackBlend(
+			[ 'one'=> 1, 'two'=> 2, 'three'=> 3 ],
+			[ 'three'=> -3, 'four' => 4, 'five'=> 5 ],
+			[ 'five'=> -5, 'six'=> 6, 'seven'=> 7 ]
+		);
+
+		$this->assertSame(1, $Stack->Get('one'));
+		$this->assertSame(2, $Stack->Get('two'));
+		$this->assertSame(3, $Stack->Get('three'));
+		$this->assertSame(4, $Stack->Get('four'));
+		$this->assertSame(5, $Stack->Get('five'));
+		$this->assertSame(6, $Stack->Get('six'));
+		$this->assertSame(7, $Stack->Get('seven'));
+
+		return;
+	}
+
+	#[Test]
+	public function
+	FromMergeFactory():
+	void {
+
+		$Stack = Datastore::FromStackMerge(
+			[ 'one'=> 1, 'two'=> 2, 'three'=> 3 ],
+			[ 'three'=> -3, 'four' => 4, 'five'=> 5 ],
+			[ 'five'=> -5, 'six'=> 6, 'seven'=> 7 ]
+		);
+
+		$this->assertSame(1, $Stack->Get('one'));
+		$this->assertSame(2, $Stack->Get('two'));
+		$this->assertSame(-3, $Stack->Get('three'));
+		$this->assertSame(4, $Stack->Get('four'));
+		$this->assertSame(-5, $Stack->Get('five'));
+		$this->assertSame(6, $Stack->Get('six'));
+		$this->assertSame(7, $Stack->Get('seven'));
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

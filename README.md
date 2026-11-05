@@ -304,12 +304,54 @@ if($Users->IsList())
 echo 'it is a list (non-associative-array).', PHP_EOL;
 ```
 
+--------------------------------------------------------------------------------
+
 ### `->IsFirstKey(string $Key): bool`
+
+Test if the specified key is the first key in this dataset.
+
+```php
+foreach($Data as $Key => $Val) {
+	if($Data->IsFirsttKey($Key))
+	echo '<ul>;'
+
+	// ...
+}
+```
+
 ### `->IsLastKey(string $Key): bool`
+
+Test if the specified key is the last key in this dataset.
+
+```php
+foreach($Data as $Key => $Val) {
+	
+	// ...
+	
+	if($Data->IsLastKey($Key))
+	echo '</ul>;'
+}
+```
+
+--------------------------------------------------------------------------------
+
 ### `->GetFirstKey(): int|string`
+
+Get the first key of this dataset.
+
+```php
+$Key = $Data->GetFirstKey();
+```
+
 ### `->GetLastKey(): int|string`
-### `->GetFirstValue(): mixed`
-### `->GetLastValue(): mixed`
+
+Get the last key of this dataset.
+
+```php
+$Key = $Data->GetLastKey();
+```
+
+--------------------------------------------------------------------------------
 
 ### `->Join(string $Delimiter): string`
 
@@ -395,6 +437,24 @@ Test the specified value as literal NULL or null enough.
 ```php
 if($Data->IsNullEnough('Something'))
 echo 'Something is nullish enough to say its null.', PHP_EOL;
+```
+
+--------------------------------------------------------------------------------
+
+### `->GetFirstValue(): mixed`
+
+Get the first value in this dataset.
+
+```php
+$Val = $Data->GetFirstValue();
+```
+
+### `->GetLastValue(): mixed`
+
+Get the last value in this dataset.
+
+```php
+$Val = $Data->GetLastValue();
 ```
 
 
