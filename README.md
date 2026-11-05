@@ -459,6 +459,18 @@ $Val = $Data->GetLastValue();
 
 
 
+## Data Filtering API
+
+Data stored within the Datastore can have filters applied when read back out as a means of validating and sanitising data.
+
+### `SetFilter(int|string $Key, callable|iterable $Func)`
+
+Set the functions to filter this value when read. Can be either a single function or a list of them to run in series. The functions take the data as the first argument and return it modified.
+
+```php
+$Data->SetFilter('ID', Filter\Type::Int(...));
+```
+
 ## Protected Keys API
 
 Protect data from being accidentally dumped by debugging tools such as `var_dump()` and `print_r()`. The true values will still exist in the dataset and can be read normally with the other methods of the Datastore object.
