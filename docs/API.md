@@ -262,7 +262,7 @@ were defined before it hands it back to you.
 printf('ID: %d.%s', $Data->Get('ID'), PHP_EOL);
 ```
 
-#### `->Pick(int|string ...$Keys): Datastore`
+#### `->Pick(int|string ...$Keys): Datastore<mixed>`
 
 Fetch a list of values. Values will be transformed by any Value Filters that
 were defined before it hands them back to you.
@@ -323,11 +323,11 @@ $Users->Each(fn(User $Who)=> var_dump($Who));
 
 --------------------------------------------------------------------------------
 
-#### `->Map(callable $Func): Datastore`
+#### `->Map(callable $Func): Datastore<mixed>`
 
 > $Func: fn(mixed $Value) => mixed
 
-#### `->MapKeyValue(callable $Func): Datastore`
+#### `->MapKeyValue(callable $Func): Datastore<mixed>`
 
 > $Func: fn(mixed $Key, mixed $Value) => mixed
 
@@ -357,11 +357,11 @@ $Users->Remap(fn(Users $Who)=> $Who->Email));
 
 --------------------------------------------------------------------------------
 
-#### `->Distill(callable $Func): Datastore`
+#### `->Distill(callable $Func): Datastore<mixed>`
 
 > $Func: fn(mixed $Value) => bool
 
-#### `->DistillKeyValue(callable $Func): Datastore`
+#### `->DistillKeyValue(callable $Func): Datastore<mixed>`
 
 > $Func: fn(mixed $Key, mixed $Value) => bool
 
@@ -465,7 +465,7 @@ Randmise the order of this dataset.
 $Data->Shuffle();
 ```
 
-#### `->Keys(void): Datastore`
+#### `->Keys(void): Datastore<int|string>`
 
 Fetch a list of all the keys for this dataset.
 
@@ -473,7 +473,7 @@ Fetch a list of all the keys for this dataset.
 $Keys = $Data->GetKeys();
 ```
 
-#### `->Values(void): Datastore`
+#### `->Values(void): Datastore<mixed>`
 
 Fetch a list of all the values in this dataset.
 
@@ -481,7 +481,7 @@ Fetch a list of all the values in this dataset.
 $Vals = $Data->GetValues();
 ```
 
-#### `->GetFirstKey(void): bool`
+#### `->GetFirstKey(void): int|string`
 
 Get the first key of this dataset.
 
@@ -489,7 +489,7 @@ Get the first key of this dataset.
 $First = $Data->GetFirstKey();
 ```
 
-#### `->GetLastKey(void): bool`
+#### `->GetLastKey(void): int|string`
 
 Get the last key of this dataset.
 
@@ -497,7 +497,7 @@ Get the last key of this dataset.
 $Last = $Data->GetLastKey();
 ```
 
-#### `->GetFirstValue(void): bool`
+#### `->GetFirstValue(void): mixed`
 
 Get the first value in this dataset.
 
@@ -505,7 +505,7 @@ Get the first value in this dataset.
 $First = $Data->GetFirstValue();
 ```
 
-#### `->GetLastValue(void): bool`
+#### `->GetLastValue(void): mixed`
 
 Get the last value in this dataset.
 
