@@ -137,7 +137,7 @@ var_dump($Data->Get('ID'));
 
 > $Func: fn(mixed $Value): mixed
 
-#### `->UnsetValueFilter(string $Key, callable|array $Func): $this`
+#### `->UnsetValueFilter(string $Key): $this`
 
 Unset Value Filters for a specific key.
 
@@ -164,7 +164,7 @@ var_dump($Data->Get('ID'));
 
 > $Func: fn(mixed $Value): mixed
 
-#### `->UnsetImportFilter(string $Key, callable|array $Func): $this`
+#### `->UnsetImportFilter(string $Key): $this`
 
 Unset Import Filters for a specific key.
 
@@ -277,70 +277,277 @@ printf('picked %d things.%s', $List->Count(), PHP_EOL);
 #### `->Push(mixed $Item): $this`
 #### `->PushFirst(mixed $Item): $this`
 
+Append an item to either end of the dataset.
+
+```php
+$Users->Push($Who);
+```
+
 #### `->Pop(mixed $Item): $this`
 #### `->PopFirst(mixed $Item): $this`
 
+Pop off an item from either end of the dataset.
+
+```php
+$Who = $Users->Pop();
+```
+
 ## Data Processing API #########################################################
 
-#### `->SortByKey(callable $Func): $this`;
-#### `->SortByValue(callable $Func): $this`;
+#### `->SortByKey(?callable $Func=NULL): $this`;
+#### `->SortByValue(?callable $Func=NULL): $this`;
+
+Sort an array with the specified callable. If no callable provided then uses
+the default PHP ksort() and asort() functions.
+
+```php
+$Users->Sort(fn(User $A, User $B)=> $A->Username <=> $B->Username);
+```
 
 --------------------------------------------------------------------------------
 
-#### `->Each(): $this`
-#### `->EachKeyValue(): $this`
+#### `->Each(callable $Func): $this`
+
+> $Func: fn(mixed $Value) => void
+
+#### `->EachKeyValue(callable $Func): $this`
+
+> $Func: fn(mixed $Key, mixed $Value) => void
+
+Run a callable for each item in the dataset.
+
+```php
+// debug dump of users.
+$Users->Each(fn(User $Who)=> var_dump($Who));
+```
 
 --------------------------------------------------------------------------------
 
-#### `->Map(): Datastore`
-#### `->MapKeyValue(): Datastore`
+#### `->Map(callable $Func): Datastore`
+
+> $Func: fn(mixed $Value) => mixed
+
+#### `->MapKeyValue(callable $Func): Datastore`
+
+> $Func: fn(mixed $Key, mixed $Value) => mixed
+
+Map the dataset to a new Datastore object using the specified callable.
+
+```php
+// make a list of email addresses.
+$Emails = $Users->Map(fn(Users $Who)=> $Who->Email));
+```
 
 --------------------------------------------------------------------------------
 
-#### `->Remap(): $this`
-#### `->RemapKeyValue(): $this`
+#### `->Remap(callable $Func): $this`
+
+> $Func: fn(mixed $Value) => mixed
+
+#### `->RemapKeyValue(callable $Func): $this`
+
+> $Func: fn(mixed $Key, mixed $Value) => mixed
+
+Map this dataset in place using the specified callable.
+
+```php
+// just keep a list of email addresses.
+$Users->Remap(fn(Users $Who)=> $Who->Email));
+```
 
 --------------------------------------------------------------------------------
 
-#### `->Distill(): Datastore`
-#### `->DistillKeyValue(): Datastore`
+#### `->Distill(callable $Func): Datastore`
+
+> $Func: fn(mixed $Value) => bool
+
+#### `->DistillKeyValue(callable $Func): Datastore`
+
+> $Func: fn(mixed $Key, mixed $Value) => bool
+
+Distill the dataset into a new Datastore object using the specified callable
+filter function. Returning TRUE from the callable keeps the item, returning
+FALSE discards it.
+
+```php
+// get a list of only users who opt in.
+$OptedIn = $Users->Distill(fn(User $Who)=> $Who->HasOptedIn('email'));
+```
 
 --------------------------------------------------------------------------------
 
-#### `->Filter(): $this`
-#### `->FilterKeyValue(): $this`
+#### `->Filter(callable $Func): $this`
+
+> $Func: fn(mixed $Value) => bool
+
+#### `->FilterKeyValue(callable $Func): $this`
+
+> $Func: fn(mixed $Key, mixed $Value) => bool
+
+Filter the dataset in place using the specified callable filter function Returning TRUE from the callable keeps the item, returning FALSE discards it.
+
+```php
+// keep only users who opt in
+$Users->Filter(fn(User $Who)=> $Who->HasOptedIn('email'));
+```
 
 --------------------------------------------------------------------------------
 
-#### `->Reindex(): $this`
-#### `->ReindexKeyValue(): $this`
+#### `->Reindex(void): $this`
+#### `->ReindexKeyValue(callable $Func): $this`
+
+> $Func: fn(mixed $Key, mixed $Value) => bool
+
+Reindex this dataset. The simple version will turn it into a simple numerically
+sequenced list. The complex version has a few different behaviours depending on
+the return supplied callable.
+
+	* NULL
+	Nothing happens. Key and value remain unchanged.
+
+	* bool FALSE
+	Key and data is removed from the dataset completely.
+	
+	* string <key>
+	Data is moved to the new key name.
+	
+	* array [ <key>, <value> ]
+	Data is moved to the new key name, and the value overwritten with the
+	supplied value.
+
+```php
+// listify dataset after filtering left indexing gaps.
+$Data->Reindex();
+```
+
+```php
+// snake_case to PascalCase the dataset key names.
+$Data->ReindexKeyValue(
+	fn(string $Key, mixed $Val)
+	=> str_replace(' ', '', ucwords(str_replace('_', ' ', $Key)))
+);
+```
 
 --------------------------------------------------------------------------------
 
-#### `->Roll(): mixed`
-#### `->RollKeyValue(): mixed`
+#### `->Roll(callable $Func, mixed $Initial=0): mixed`
+
+> $Func: fn(mixed $Value, mixed $Prev) => bool
+
+#### `->RollKeyValue(callable $Func, mixed $Initial=0): mixed`
+
+> $Func: fn(mixed $Key, mixed $Value, mixed $Prev) => bool
+
+Perform a rollup operation (accumulation / reduce) by walking across all items
+carrying a value that they can alter with the supplied callable.
+
+```php
+// calculate total points in current economy.
+$Total = $Users->Roll(fn(User $Who, int $Prev)=> $Prev + $Who->Points);
+```
 
 ## Misc Utility ################################################################
 
 #### `->Join(string $Delim): string`
 
+Join each item together into a giant string using the specified delimiter.
+
+```php
+// get a pipe delimited list of things.
+$Row = $Data->Join('|');
+```
+
 #### `->Shuffle(void): $this`
+
+Randmise the order of this dataset.
+
+```php
+$Data->Shuffle();
+```
 
 --------------------------------------------------------------------------------
 
 #### `->IsEmpty(void): bool`
 
+Test if the dataset is empty.
+
+```php
+if($Data->IsEmpty())
+echo 'Dataset is empty.', PHP_EOL;
+```
+
 #### `->IsTrue(string $Key): bool`
+
+Test if the specified item is boolean TRUE.
+
+```php
+if($Config->IsTrue('something'))
+PerformFeatureSomething();
+```
 
 #### `->IsTrueEnough(string $Key): bool`
 
+Test if the specified value is boolean TRUE, or something that evaluates to
+true. This test differs from PHP's default handlng of what is trueish.
+
+> TRUE, 1, '1', 'T', 'TRUE', 'Y', 'YES' [case-insensitive]
+
+```php
+if($Config->IsTrueEnough('something'))
+PerformFeatureSomething();
+```
+
 #### `->IsFalse(string $Key): bool`
+
+Test if the specified item is boolean FALSE.
+
+```php
+if($Config->IsFalse('something')) {
+	echo 'skipping feature: Something', PHP_EOL;
+	return;
+}
+```
 
 #### `->IsFalseEnough(string $Key): bool`
 
+Test if the specified value is boolean FALSE, or something that evaluates to
+false. This test differs from PHP's default handlng of what is falsy.
+
+> NULL, FALSE, 0, '0', 'F', 'FALSE', 'N', 'NO' [case-insensitive]
+
+```php
+if($Config->IsFalseEnough('something')) {
+	echo 'skipping feature: Something', PHP_EOL;
+	return;
+}
+```
+
+> (also anything not coverved by IsTrueEnough, example: 'asdf')
+
 #### `->IsNull(string $Key): bool`
 
+Test if the specified item is literal NULL and/or undefined.
+
+```php
+if($Config->IsNull('something')) {
+	echo 'missing configuration for something', PHP_EOL;
+	return;
+}
+```
+
 #### `->IsNullEnough(string $Key): bool`
+
+Test if the specified value is literal NULL, or something that evaluates to
+NULL. This test differs from PHP's default handlng of what is nullish.
+
+> NULL, '', 'NULL' [case-insensitive]
+
+```php
+if($Config->IsNullEnough('something')) {
+	echo 'missing configuration for something', PHP_EOL;
+	return;
+}
+```
 
 --------------------------------------------------------------------------------
 
