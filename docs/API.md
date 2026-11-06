@@ -182,8 +182,8 @@ Remove a key from debugging protection.
 
 --------------------------------------------------------------------------------
 
-#### `->Map(): $this`
-#### `->MapKeyValue(): $this`
+#### `->Map(): Datastore`
+#### `->MapKeyValue(): Datastore`
 
 --------------------------------------------------------------------------------
 
@@ -192,8 +192,8 @@ Remove a key from debugging protection.
 
 --------------------------------------------------------------------------------
 
-#### `->Distill(): $this`
-#### `->DistillKeyValue(): $this`
+#### `->Distill(): Datastore`
+#### `->DistillKeyValue(): Datastore`
 
 --------------------------------------------------------------------------------
 
@@ -207,8 +207,8 @@ Remove a key from debugging protection.
 
 --------------------------------------------------------------------------------
 
-#### `->Roll(): $this`
-#### `->RollKeyValue(): $this`
+#### `->Roll(): mixed`
+#### `->RollKeyValue(): mixed`
 
 ## Misc Utility ################################################################
 
@@ -233,6 +233,10 @@ Remove a key from debugging protection.
 #### `->IsNullEnough(string $Key): bool`
 
 --------------------------------------------------------------------------------
+
+#### `->GetKeys(): Datastore`
+
+#### `->GetValues(): Datastore`
 
 #### `->IsFirstKey(string $Key): bool`
 
