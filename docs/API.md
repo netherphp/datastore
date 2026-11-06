@@ -446,7 +446,7 @@ carrying a value that they can alter with the supplied callable.
 $Total = $Users->Roll(fn(User $Who, int $Prev)=> $Prev + $Who->Points);
 ```
 
-## Misc Utility ################################################################
+## Misc Utility Methods ########################################################
 
 #### `->Join(string $Delim): string`
 
@@ -465,7 +465,55 @@ Randmise the order of this dataset.
 $Data->Shuffle();
 ```
 
---------------------------------------------------------------------------------
+#### `->Keys(void): Datastore`
+
+Fetch a list of all the keys for this dataset.
+
+```php
+$Keys = $Data->GetKeys();
+```
+
+#### `->Values(void): Datastore`
+
+Fetch a list of all the values in this dataset.
+
+```php
+$Vals = $Data->GetValues();
+```
+
+#### `->GetFirstKey(void): bool`
+
+Get the first key of this dataset.
+
+```php
+$First = $Data->GetFirstKey();
+```
+
+#### `->GetLastKey(void): bool`
+
+Get the last key of this dataset.
+
+```php
+$Last = $Data->GetLastKey();
+```
+
+#### `->GetFirstValue(void): bool`
+
+Get the first value in this dataset.
+
+```php
+$First = $Data->GetFirstValue();
+```
+
+#### `->GetLastValue(void): bool`
+
+Get the last value in this dataset.
+
+```php
+$Last = $Data->GetLastValue();
+```
+
+## Value Test API ##############################################################
 
 #### `->IsEmpty(void): bool`
 
@@ -475,6 +523,35 @@ Test if the dataset is empty.
 if($Data->IsEmpty())
 echo 'Dataset is empty.', PHP_EOL;
 ```
+
+#### `->IsFirstKey(string $Key): bool`
+
+Test if specified key is the first key in this dataset.
+
+```php
+foreach($Data as $Key => $Val) {
+	if($Data->IsFirstKey($Key))
+	echo '<ul>';
+
+	// ...
+}
+```
+
+#### `->IsLastKey(string $Key): bool`
+
+Test if specified key is the last key in this dataset.
+
+```php
+foreach($Data as $Key => $Val) {
+	
+	// ...
+
+	if($Data->IsLastKey($Key))
+	echo '</ul>';
+}	
+```
+
+--------------------------------------------------------------------------------
 
 #### `->IsTrue(string $Key): bool`
 
@@ -548,22 +625,3 @@ if($Config->IsNullEnough('something')) {
 	return;
 }
 ```
-
---------------------------------------------------------------------------------
-
-#### `->GetKeys(): Datastore`
-
-#### `->GetValues(): Datastore`
-
-#### `->IsFirstKey(string $Key): bool`
-
-#### `->IsLastKey(string $Key): bool`
-
-#### `->GetFirstKey(void): bool`
-
-#### `->GetLastKey(void): bool`
-
-#### `->GetFirstValue(void): bool`
-
-#### `->GetLastValue(void): bool`
-

@@ -521,7 +521,7 @@ implements
 	#[Code\Info('Return a list of the keys in this dataset.')]
 	#[Code\Added('2026-11-01')]
 	public function
-	GetKeys():
+	Keys():
 	static {
 
 		return new static(array_keys($this->Dataset));
@@ -530,7 +530,7 @@ implements
 	#[Code\Info('Return a list of the values in this dataset.')]
 	#[Code\Added('2026-11-02')]
 	public function
-	GetValues():
+	Values():
 	static {
 
 		return new static(array_values($this->Dataset));

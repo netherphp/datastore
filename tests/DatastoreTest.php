@@ -196,7 +196,7 @@ extends TestCase {
 
 		$Store = Datastore::FromFile($Filename);
 		unlink($Filename);
-		
+
 		$this->assertSame(1, $Store->Get('One'));
 		$this->assertSame(2, $Store->Get('Two'));
 		$this->assertSame(NULL, $Store->Get('Three'));
@@ -1050,7 +1050,7 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
-		$Keys = $Store->GetKeys();
+		$Keys = $Store->Keys();
 
 		$this->assertInstanceOf(Datastore::class, $Keys);
 		$this->assertEquals('one', $Keys[0]);
@@ -1066,7 +1066,7 @@ extends TestCase {
 	void {
 
 		$Store = new Datastore(static::DatasetSimpleMap);
-		$Vals = $Store->GetValues();
+		$Vals = $Store->Values();
 
 		$this->assertInstanceOf(Datastore::class, $Vals);
 		$this->assertEquals(1, $Vals[0]);
