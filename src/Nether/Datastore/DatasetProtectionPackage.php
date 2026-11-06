@@ -55,7 +55,7 @@ trait DatasetProtectionPackage {
 	////////////////////////////////////////////////////////////////
 
 	public function
-	AddProtectedKey(int|string $Key, bool $Strip=FALSE):
+	SetProtectedKey(int|string $Key, bool $Strip=FALSE):
 	static {
 
 		$this->ProtectedKeys[$Key] = !$Strip;
@@ -64,21 +64,11 @@ trait DatasetProtectionPackage {
 	}
 
 	public function
-	RemoveProtectedKey(int|string $Key):
+	UnsetProtectedKey(int|string $Key):
 	static {
 
 		unset($this->ProtectedKeys[$Key]);
 		
-		return $this;
-	}
-
-	public function
-	ClearProtectedKeys():
-	static {
-
-		unset($this->ProtectedKeys);
-		$this->ProtectedKeys = [];
-
 		return $this;
 	}
 

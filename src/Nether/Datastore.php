@@ -54,7 +54,7 @@ implements
 	public function
 	OnPrepare():
 	void {
-
+		
 		return;
 	}
 
@@ -63,7 +63,7 @@ implements
 	public function
 	OnReady():
 	void {
-
+		
 		return;
 	}
 

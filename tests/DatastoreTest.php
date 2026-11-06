@@ -1756,7 +1756,7 @@ extends TestCase {
 
 		////////
 
-		$Store->AddProtectedKey(1);
+		$Store->SetProtectedKey(1);
 
 		$this->assertSame(1, preg_match(
 			'/\[1\] => \[protected string\]/ms',
@@ -1765,7 +1765,7 @@ extends TestCase {
 
 		////////
 
-		$Store->AddProtectedKey(1, TRUE);
+		$Store->SetProtectedKey(1, TRUE);
 
 		$this->assertSame(0, preg_match(
 			'/\[1\] => /ms',
@@ -1774,17 +1774,7 @@ extends TestCase {
 
 		////////
 
-		$Store->RemoveProtectedKey(1);
-
-		$this->assertSame(1, preg_match(
-			'/\[1\] => two/ms',
-			$Run($Store)
-		));
-
-		////////
-
-		$Store->AddProtectedKey(1);
-		$Store->ClearProtectedKeys();
+		$Store->UnsetProtectedKey(1);
 
 		$this->assertSame(1, preg_match(
 			'/\[1\] => two/ms',
@@ -1816,7 +1806,7 @@ extends TestCase {
 
 		////////
 
-		$Store->AddProtectedKey(1);
+		$Store->SetProtectedKey(1);
 
 		$this->assertSame(1, preg_match(
 			'/\[1\]=>(?:[\r\n\s\h]+)string\(18\) "\[protected string\]"/ms',
@@ -1825,7 +1815,7 @@ extends TestCase {
 
 		////////
 
-		$Store->AddProtectedKey(1, TRUE);
+		$Store->SetProtectedKey(1, TRUE);
 
 		$this->assertSame(0, preg_match(
 			'/\[1\]=>/ms',

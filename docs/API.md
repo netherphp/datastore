@@ -111,21 +111,72 @@ $Data->Write('cache/posts.json');
 ## Filtering API ###############################################################
 
 There are two types of filters that can be used: Value (runs when a value is
-fetched) and Import (runs when a value is stored).
+fetched) and Import (runs when a value is stored). There are no filters by
+default.
+
+* Value filters can be defined at any time as they do not alter the stored
+  data, rather executed each time the value is read out.
+
+* Import Filters should be defined before the datastore is populated.
+  Values already stored within will not be filtered until the next time
+  they are updated.
 
 #### `->SetValueFilter(string $Key, callable|array $Func): $this`
+
+Set a Value Filter for a specific key. Can take either a callable function or
+a list of them to run in series. Data will be run through the filters each
+time they are read.
+
+```php
+// make sure we always get an integer back.
+$Data->Set('ID', $_GET['id']);
+$Data->SetValueFilter('ID', fn(mixed $V)=> (int)$V);
+
+var_dump($Data->Get('ID'));
+```
+
+> $Func: fn(mixed $Value): mixed
+
 #### `->UnsetValueFilter(string $Key, callable|array $Func): $this`
+
+Unset Value Filters for a specific key.
+
+```php
+// make sure we always get an integer back.
+$Data->UnsetValueFilter('ID');
+```
 
 --------------------------------------------------------------------------------
 
 #### `->SetImportFilter(string $Key, callable|array $Func): $this`
+
+Set Import Filters for a specific key. Can take either a callable function or
+a list of them to run in series. Data will be run through the defined filters
+when they are added or updated.
+
+```php
+// make sure we only ever store an integer here.
+$Data->SetImportFilter('ID', fn(mixed $V)=> (int)$V);
+$Data->Set('ID', $_GET['id']);
+
+var_dump($Data->Get('ID'));
+```
+
+> $Func: fn(mixed $Value): mixed
+
 #### `->UnsetImportFilter(string $Key, callable|array $Func): $this`
+
+Unset Import Filters for a specific key.
+
+```php
+$Data->UnsetImportFilter('ID');
+```
 
 ## Protection API ##############################################################
 
 The protection API is an aid to guard values from being dumped by debugging
-tools like `var_dump()` and `print_r()`. The data is not altered in any way, only
-masked when printed by anything using PHP's `__debugInfo` system.
+tools like `var_dump()` and `print_r()`. The data is not altered in any way, 
+only masked when printed by anything using PHP's magic `__debugInfo` system.
 
 Use case: about to `var_dump()` something you probably shouldn't, like a
 configuration, but nothing can stop it because you are an agent of chaos.
@@ -136,13 +187,23 @@ they define them, to try and avoid you shooting yourself later.
 
 Add a key to protect from debugging info.
 
-> If `$Strip` is FALSE it will print "[protected thing]" in place of the value.
+```php
+$Data->SetProtectedKey('APIKEY');
+var_dump($Data);
+```
+
+> If `$Strip` is FALSE it will print "`[protected thing]`" in place of the value.
 
 > If `$Strip` is TRUE it will completely omit the key as if it does not exist.
 
 #### `->UnsetProtectedKey(int|string $Key): $this`
 
 Remove a key from debugging protection.
+
+```php
+$Data->UnsetProtectedKey('APIKEY');
+var_dump($Data);
+```
 
 ## Input/Output API ############################################################
 

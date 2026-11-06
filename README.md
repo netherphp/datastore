@@ -4,12 +4,38 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/netherphp/datastore/phpunit.yml?style=for-the-badge)](https://github.com/netherphp/datastore/actions)
 [![codecov](https://img.shields.io/codecov/c/gh/netherphp/datastore?style=for-the-badge&token=VQC48XNBS2)](https://codecov.io/gh/netherphp/datastore)
 
-Provides a data collection object that is a redux of the Nether\Common\Datastore rebuilt with the lessons learned from the original. It's primary purpose is to make PHP's API more sane by having consistent callable argument orders, naming, etc, whilst working with arrays of data.
+Provide a wrapper to work on collections of data instead of dealing with arrays directly by hand. Sane and consistent function naming, without having to guess
+the order of arguments for callable arugments. Also implements common SPL
+interfaces so the Datastore can be passed onto other things that accept generic
+iterables.
 
 ## Documentation ###############################################################
 
-See `docs/API.md` for technical documentation.
+See `docs/API.md` for full API documentation.
 
-## TODO ########################################################################
+#### Example: creating a configuration and then using it later.
 
-...
+```php
+$Config = new Datastore([
+	'APIKEY' => 'qwer-ty-asdf-gh-zxcv-bn',
+	'Theme'  => 'dark'
+]);
+```
+
+```php
+echo SomeCaptchaWidgetProbably(
+	$Config['APIKEY'],
+	$Config['Theme']
+);
+```
+
+#### Example: processing a list of users into a mailing-list.json file.
+
+```php
+(new Datastore($Users))
+->Filter(fn(User $Who)=> $Who->HasOptedIn('emails'))
+->SortByValue(fn(User $A, User $B)=> $A->Username <=> $B->Username)
+->Remap(fn(User $Who)=> sprintf('%s <%s>', $Who->Username, $Who->Email))
+->Reindex()
+->Write('mailing-list.json');
+```
