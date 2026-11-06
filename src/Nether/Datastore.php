@@ -1002,6 +1002,18 @@ implements
 	}
 
 	#[Code\Added('2026-11-01')]
+	#[Code\Info('Factory to create datastore from a file on disk.')]
+	static public function
+	FromFile(string $Filename):
+	static {
+
+		$Store = new static;
+		$Store->Load($Filename);
+
+		return $Store;
+	}
+
+	#[Code\Added('2026-11-01')]
 	#[Code\Info('Factory to create datastore by string explosion.')]
 	static public function
 	FromString(string $Input, string $Delim=''):
