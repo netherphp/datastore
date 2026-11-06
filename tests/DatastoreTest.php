@@ -195,6 +195,8 @@ extends TestCase {
 		file_put_contents($Filename, json_encode( [ 'One'=> 1, 'Two'=> 2 ] ));
 
 		$Store = Datastore::FromFile($Filename);
+		unlink($Filename);
+		
 		$this->assertSame(1, $Store->Get('One'));
 		$this->assertSame(2, $Store->Get('Two'));
 		$this->assertSame(NULL, $Store->Get('Three'));

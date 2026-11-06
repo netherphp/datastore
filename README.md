@@ -39,3 +39,10 @@ echo SomeCaptchaWidgetProbably(
 ->Reindex()
 ->Write('mailing-list.json');
 ```
+
+#### Example: loading a mailing-list.json file from disk.
+
+```php
+$Emails = Datastore::FromFile('mailing-list.json');
+$Emails->Each(fn(string $To)=> print('* %s%s', $To, PHP_EOL));
+```
