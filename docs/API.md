@@ -209,19 +209,68 @@ var_dump($Data);
 
 #### `->Set(int|string $Key, mixed $Value): $this`
 
+Set and or overwrite the specified key to the specified value. Value will be transformed by any Import Filters that were defined for that key before stored.
+
+```php
+$Data->Set('ID', 42);
+```
+
 #### `->Define(int|string $Key, mixed $Value): $this`
+
+Same as `Set()` except if the key already exists, it will NOT be overwritten.
+Useful for setting default config values late if some user config has already
+been supplied.
+
+```php
+$Data->Define('ID', 69);
+```
 
 #### `->Unset(int|string $Key): $this`
 
+Removes the key and value from the datastore.
+
+```php
+$Data->Unset('ID');
+```
+
 --------------------------------------------------------------------------------
 
-#### `->Count(void): mixed`
+#### `->Count(void): int`
 
-#### `->Has(int|string $Key): mixed`
+Return how many items are stored.
+
+```php
+$Num = $Data->Count();
+```
+
+#### `->Has(int|string $Key): bool`
+
+Check if a key exists. Does not care what the value of that key is, only that
+we have one.
+
+```php
+if($Data->Has('ID'))
+printf('dataset contains an ID.%s', PHP_EOL);
+```
 
 #### `->Get(int|string $Key): mixed`
 
-#### `->Pick(int|string ...$Keys): mixed`
+Fetch a specific value. Value will be transformed by any Value Filters that
+were defined before it hands it back to you.
+
+```php
+printf('ID: %d.%s', $Data->Get('ID'), PHP_EOL);
+```
+
+#### `->Pick(int|string ...$Keys): Datastore`
+
+Fetch a list of values. Values will be transformed by any Value Filters that
+were defined before it hands them back to you.
+
+```php
+$List = $Data->Pick('One', 'Two', 'Three');
+printf('picked %d things.%s', $List->Count(), PHP_EOL);
+```
 
 --------------------------------------------------------------------------------
 
