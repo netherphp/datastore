@@ -283,6 +283,21 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	FromInputFactory():
+	void {
+
+		$Store = Datastore::FromInput(static::DatasetSimpleMap, [
+			'two' => (fn(int $V)=> (float)$V)
+		]);
+
+		$this->AssertSame(1, $Store['one']);
+		$this->AssertSame(2.0, $Store['two']);
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 

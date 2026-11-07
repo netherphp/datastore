@@ -1014,6 +1014,30 @@ implements
 		return $Store;
 	}
 
+	#[Code\Added('2026-11-07')]
+	#[Code\Info('Factory style constructor with import filter option.')]
+	static public function
+	FromInput(iterable $Input=[], iterable $Filters=[]):
+	static {
+
+		$Output = new static;
+		$Key = NULL;
+		$Call = NULL;
+
+		////////
+
+		foreach($Filters as $Key => $Call) {
+			$Output->SetImportFilter($Key, $Call);
+			continue;
+		}
+
+		$Output->Import($Input);
+
+		////////
+
+		return $Output;
+	}
+
 	#[Code\Added('2026-11-01')]
 	#[Code\Info('Factory to create datastore from a file on disk.')]
 	static public function
@@ -1097,7 +1121,9 @@ implements
 	FromObject(object $Input):
 	static {
 
-		$Output = new Datastore(get_object_vars($Input));
+		$Output = static::FromInput(
+			get_object_vars($Input)
+		);
 
 		return $Output;
 	}
