@@ -336,6 +336,19 @@ implements
 		return array_key_exists($Key, $this->Dataset);
 	}
 
+	#[Code\Info('Check if a all keys exist in the dataset.')]
+	#[Code\Added('2026-11-07')]
+	public function
+	HasAll(int|string ...$Keys):
+	bool {
+
+		foreach($Keys as $Key)
+		if(!array_key_exists($Key, $this->Dataset))
+		return FALSE;
+
+		return TRUE;
+	}
+
 	#[Code\Info('Retrieve a key-value if it exists, otherwise return default value.')]
 	#[Code\Added('2026-10-26')]
 	public function
@@ -1033,7 +1046,7 @@ implements
 	}
 
 	#[Code\Added('2026-11-05')]
-	#[Code\Info('Factory to create datastore merging stacks.')]
+	#[Code\Info('Factory to create datastore by blending stacks.')]
 	static public function
 	FromStackBlend(iterable $Input, array ...$MoreIterables):
 	static {
@@ -1056,7 +1069,7 @@ implements
 	}
 
 	#[Code\Added('2026-11-05')]
-	#[Code\Info('Factory to create datastore merging stacks.')]
+	#[Code\Info('Factory to create datastore by merging stacks.')]
 	static public function
 	FromStackMerge(iterable $Input, array ...$MoreIterables):
 	static {
@@ -1074,6 +1087,17 @@ implements
 		}
 
 		////////
+
+		return $Output;
+	}
+
+	#[Code\Added('2026-11-07')]
+	#[Code\Info('Factory to create datastore from an object.')]
+	static public function
+	FromObject(object $Input):
+	static {
+
+		$Output = new Datastore(get_object_vars($Input));
 
 		return $Output;
 	}

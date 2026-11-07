@@ -265,6 +265,24 @@ extends TestCase {
 		return;
 	}
 
+	#[Test]
+	public function
+	FromObjectFactory():
+	void {
+
+		$Basic = new stdClass;
+		$Basic->Uno = 1;
+		$Basic->Dos = 2;
+
+		$Store = Datastore::FromObject($Basic);
+		$this->assertTrue($Store->Has('Uno'));
+		$this->assertSame(1, $Store->Get('Uno'));
+		$this->assertTrue($Store->Has('Dos'));
+		$this->assertSame(2, $Store->Get('Dos'));
+
+		return;
+	}
+
 	////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////
 
@@ -756,6 +774,19 @@ extends TestCase {
 
 		return;
 	}
+
+	#[Test]
+	public function
+	MethodHasAll():
+	void {
+
+		$Store = new Datastore(static::DatasetSimpleMap);
+		$this->assertTrue($Store->HasAll('one', 'two', 'three'));
+		$this->assertFalse($Store->HasAll('one', 'four'));
+
+		return;
+	}
+
 
 	#[Test]
 	public function
