@@ -22,8 +22,8 @@
 	],
 	"require": {
 		"php": "^8.5",
-		"netherphp/meta": "dev-master as 0.0.1",
-		"netherphp/filter": "dev-master as 0.0.1"
+		"netherphp/meta": "^0",
+		"netherphp/filter": "^0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^13"
